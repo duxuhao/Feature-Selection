@@ -57,7 +57,7 @@ class LRS_SA_RGSS_combination():
         print('{0}\nbest score:{1}\nbest features combination: {2}'.format('*-*' * 50, self.bestscore, self.bestfeature))
 
     def k_fold(self, selectcol, num, addfeature, coetest=0):#get the score with the new features list and update the best features combination
-        """ set up your cross validation here
+        """ set up your cross validation here"""
         selectcol = list(OrderedDict.fromkeys(selectcol))
         X, y = self.df, self.df[self.Label]
         totaltest = 0
