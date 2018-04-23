@@ -22,7 +22,7 @@ This code is based on the IJCAI-2018 but can tune easily for other dataset
 
 - This code take a while to run, you can stop it any time and restart by replace the best features combination in temp
 
-## This features selection method achieved:
+## This features selection method achieved
 
 - **1st** in Rong360
 
