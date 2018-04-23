@@ -22,13 +22,14 @@ This code is based on the IJCAI-2018 but can tune easily for other dataset
 
 - This code take a while to run, you can stop it any time and restart by replace the best features combination in temp
 
-##This features selection method achieve:
+## This features selection method achieve:
 
--1st in Rong360
---https://github.com/duxuhao/rong360-season2
+- **1st** in Rong360
 
--12nd in IJCAI-2018 1st round
+   -- https://github.com/duxuhao/rong360-season2
 
-#Algorithm details
+- **12nd** in IJCAI-2018 1st round
+
+# Algorithm details
 
 ![Procedure](https://github.com/duxuhao/Feature-Selection/blob/master/Procedure.png)
