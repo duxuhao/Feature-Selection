@@ -5,7 +5,7 @@ This code is based on the IJCAI-2018 but can tune easily for other dataset
 - Import library from FeatureSelection.py and also other necessary library
 
 ```python
-import FeaturesSelection as FS
+import FeatureSelection as FS
 from sklearn.metrics import log_loss
 import lightgbm as lgbm
 import pandas as pd
