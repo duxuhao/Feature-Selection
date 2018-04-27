@@ -61,7 +61,8 @@ class LRS_SA_RGSS_combination():
             #the greedy will loop again. otherwise, the selection complete
             print('test performance of initial features combination')
             self.bestscore, self.bestfeature = self.score, self.TemplUsedFeatures[:]
-            self.validation(self.TemplUsedFeatures[:], str(0), 'baseline', coetest = 0)
+            if self.TemplUsedFeatures != []:
+                self.validation(self.TemplUsedFeatures[:], str(0), 'baseline', coetest = 0)
             # greedy: forward + backward + Simulated Annealing
             if self.Process[0]:
                 self.Greedy()
@@ -171,14 +172,17 @@ class LRS_SA_RGSS_combination():
         print('{0}{1}{2}'.format('-' * 20, 'start random', '-' * 20))
         for i in self.bestfeature:
             col.remove(i)
-        for t in range(3,8): # add 4 to 8 features randomly, choose your own range
-            print('add {} features'.format(t))
-            for i in range(50): # run 50 rounds each quantity, choose your own round number
-                selectcol = random.sample(col, t)
-                recordadd = selectcol[:]
-                for add in self.bestfeature:
-                    selectcol.append(add)
-                self.validation(selectcol, str(i), str(recordadd))
+        try:
+            for t in range(3,8): # add 4 to 8 features randomly, choose your own range
+                print('add {} features'.format(t))
+                for i in range(50): # run 50 rounds each quantity, choose your own round number
+                    selectcol = random.sample(col, t)
+                    recordadd = selectcol[:]
+                    for add in self.bestfeature:
+                        selectcol.append(add)
+                    self.validation(selectcol, str(i), str(recordadd))
+        except:
+            pass
         print('{0}{1}{2}'.format('-' * 20, 'complete random', '-' * 20))
 
     def ScoreUpdate(self):
