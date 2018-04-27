@@ -18,13 +18,13 @@ def modelscore(y_test, y_pred):
     """set up the evaluation score"""
     return log_loss(y_test, y_pred)
 
-def validation(X,y,clf,lossfunction):
+def validation(X,y,features, clf,lossfunction):
     """set up your validation method"""
     totaltest = 0
     for D in [24]:
         T = (X.day != D)
         X_train, X_test = X[T], X[~T]
-        X_train, X_test = X_train, X_test
+        X_train, X_test = X_train[features], X_test[features]
         y_train, y_test = y[T], y[~T]
         clf.fit(X_train,y_train, eval_set = [(X_train, y_train), (X_test, y_test)], eval_metric='logloss', verbose=False,early_stopping_rounds=200)
         totaltest += lossfunction(y_test, clf.predict_proba(X_test)[:,1])
