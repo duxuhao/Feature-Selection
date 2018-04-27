@@ -28,7 +28,7 @@ def validation(X,y,clf,lossfunction):
         y_train, y_test = y[T], y[~T]
         clf.fit(X_train,y_train, eval_set = [(X_train, y_train), (X_test, y_test)], eval_metric='logloss', verbose=False,early_stopping_rounds=200)
         totaltest += lossfunction(y_test, clf.predict_proba(X_test)[:,1])
-    totaltest /= 2.0
+    totaltest /= 1.0
     return totaltest
 
 def add(x,y):
