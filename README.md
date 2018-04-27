@@ -10,7 +10,7 @@ pip3 install MLFeatureSelection
 ```
 Demo is [here!](https://pypi.org/project/MLFeatureSelection/)
 
-## How to run (see demo.py)
+## How to run after git clone
 
 The demo is based on the IJCAI-2018 data moning competitions
 
@@ -132,6 +132,8 @@ sf.logfile = 'record.log'
 ```python
 sf.run(validation)
 ```
+
+see complete code in demo.py
 
 - This code take a while to run, you can stop it any time and restart by replace the best features combination in temp sf.InitialFeatures()
 
