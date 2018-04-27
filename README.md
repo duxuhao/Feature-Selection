@@ -1,7 +1,10 @@
 # Features Selection
-This code is based on the IJCAI-2018 but can tune easily for other dataset
+This code is for general features selection based on certain machine learning algorithm and evaluation methos
 
 ## How to run (see demo.py)
+
+The demo is based on the IJCAI-2018 data moning competitions
+
 - Import library from FeatureSelection.py and also other necessary library
 
 ```python
@@ -16,7 +19,7 @@ import numpy as np
 
 ```python
 def prepareData():
-    df = pd.read_csv('IJCAI-2018/data/train/trainb.csv')
+    df = pd.read_csv('data/train/trainb.csv')
     df = df[~pd.isnull(df.is_trade)]
     item_category_list_unique = list(np.unique(df.item_category_list))
     df.item_category_list.replace(item_category_list_unique, list(np.arange(len(item_category_list_unique))), inplace=True)
@@ -33,12 +36,12 @@ def modelscore(y_test, y_pred):
 - Define the way to validate
 
 ```python
-def validation(X,y,clf,lossfunction):
+def validation(X,y,clf, features,lossfunction):
     totaltest = 0
     for D in [24]:
         T = (X.day != D)
         X_train, X_test = X[T], X[~T]
-        X_train, X_test = X_train, X_test
+        X_train, X_test = X_train[features], X_test[features]
         y_train, y_test = y[T], y[~T]
         clf.fit(X_train,y_train, eval_set = [(X_train, y_train), (X_test, y_test)], eval_metric='logloss', verbose=False,early_stopping_rounds=200) #the train method must match your selected algorithm
         totaltest += lossfunction(y_test, clf.predict_proba(X_test)[:,1])
