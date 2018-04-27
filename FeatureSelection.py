@@ -104,7 +104,7 @@ class LRS_SA_RGSS_combination():
         """ set up your cross validation here"""
         selectcol = list(OrderedDict.fromkeys(selectcol))
         X, y = self.df, self.df[self.Label]
-        totaltest = self.validatefunction(X[selectcol], y, self.clf, self.LossFunction)
+        totaltest = self.validatefunction(X, y, selectcol, self.clf, self.LossFunction)
         print('Mean loss: {}'.format(totaltest))
         # only when the score improve, the program will record,
         # change the operator ( < or > ) according to your evalulation function
