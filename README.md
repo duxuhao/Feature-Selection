@@ -1,5 +1,7 @@
 # Features Selection
-This code is for general features selection based on certain machine learning algorithm and evaluation methos
+This code is for general features selection based on certain machine learning algorithm and evaluation methods
+
+More features selection will be included in the future!
 
 ## How to run (see demo.py)
 
