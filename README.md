@@ -76,6 +76,12 @@ sf = FS.Select(Sequence = False, Random = True, Cross = False) #select the way y
 - Import loss function
 
 ```python
+sf.ImportLossFunction(modelscore,direction = 'descend')
+```
+
+- Import dataset
+
+```python
 sf.ImportDF(prepareData(),label = 'is_trade')
 ```
 
