@@ -115,7 +115,7 @@ sf.logfile = 'record.log'
 sf.run(validation)
 ```
 
-- This code take a while to run, you can stop it any time and restart by replace the best features combination in temp
+- This code take a while to run, you can stop it any time and restart by replace the best features combination in temp sf.InitialFeatures()
 
 ## This features selection method achieved
 

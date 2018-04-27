@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+
+##############################################
+# File Name: FeatureSelection
+# Author: Xuhao Du
+# Email: duxuhao88@gmail.com
+##############################################
+
 from scipy.stats import pearsonr
 from collections import OrderedDict
 import random
@@ -15,11 +24,9 @@ def DefaultValidation(X, y, clf, lossfunction):
     return np.mean(totaltest)
 
 class LRS_SA_RGSS_combination():
-    def __init__(self, clf, df, RecordFolder, columnname, start, label,  Process, direction, LossFunction = 0, validatefunction = 0, Startcol = ['None'], PotentialAdd = [], CrossMethod = 0, CoherenceThreshold = 1):
+    def __init__(self, clf, df, RecordFolder, columnname, start, label,  Process, direction, LossFunction, validatefunction = 0, Startcol = ['None'], PotentialAdd = [], CrossMethod = 0, CoherenceThreshold = 1):
         self.clf = clf
         self.LossFunction = LossFunction
-        if self.LossFunction == 0:
-            self.LossFunction = DefaultLossFunction
         self.df = df
         self.RecordFolder  = RecordFolder
         self.columnname = columnname
@@ -31,7 +38,7 @@ class LRS_SA_RGSS_combination():
         self.direction = direction
         self.validatefunction = validatefunction
         if self.validatefunction == 0:
-            self.validatefunction = DefaultValidation
+            self.validatefunction = DefaultValidation # DefaultValidation is 5-fold
         self.coherenceThreshold = CoherenceThreshold
 
     def evaluate(self, a, b):
