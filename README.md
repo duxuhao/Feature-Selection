@@ -45,7 +45,7 @@ def modelscore(y_test, y_pred):
 - Define the way to validate
 
 ```python
-def validation(X,y,clf, features,lossfunction):
+def validation(X,y, features, clf,lossfunction):
     totaltest = 0
     for D in [24]:
         T = (X.day != D)
