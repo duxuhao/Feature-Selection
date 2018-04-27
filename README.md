@@ -3,6 +3,13 @@ This code is for general features selection based on certain machine learning al
 
 More features selection method will be included in the future!
 
+you can use pip to install!
+
+```
+pip3 install MLFeatureSelection
+```
+Demo is [here!](https://pypi.org/project/MLFeatureSelection/)
+
 ## How to run (see demo.py)
 
 The demo is based on the IJCAI-2018 data moning competitions
@@ -138,4 +145,4 @@ sf.run(validation)
 
 ## Algorithm details
 
-![Procedure](https://github.com/duxuhao/Feature-Selection/blob/master/Procedure.png)
+![Procedure](https://github.com/duxuhao/Feature-Selection/blob/master/Procedure2.png)
