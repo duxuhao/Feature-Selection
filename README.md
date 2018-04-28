@@ -147,4 +147,4 @@ see complete code in demo.py
 
 ## Algorithm details
 
-![Procedure](https://github.com/duxuhao/Feature-Selection/blob/master/Procedure2.png)
+![Procedure](https://github.com/duxuhao/Feature-Selection/blob/master/Procedure0.png)
