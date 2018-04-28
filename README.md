@@ -17,7 +17,8 @@ The demo is based on the IJCAI-2018 data moning competitions
 - Import library from FeatureSelection.py and also other necessary library
 
 ```python
-import FeatureSelection as FS
+import FeatureSelection as FS 
+#from MLFeatureSelection import FeatureSelection as FS #import should be like this if use pip to install
 from sklearn.metrics import log_loss
 import lightgbm as lgbm
 import pandas as pd
