@@ -3,7 +3,7 @@ This code is for general features selection based on certain machine learning al
 
 More features selection method will be included in the future!
 
-you can use pip to install!
+To run the demo, please install via pip3
 
 ```
 pip3 install MLFeatureSelection
@@ -17,8 +17,7 @@ The demo is based on the IJCAI-2018 data moning competitions
 - Import library from FeatureSelection.py and also other necessary library
 
 ```python
-import FeatureSelection as FS 
-#from MLFeatureSelection import FeatureSelection as FS #import should be like this if use pip to install
+from MLFeatureSelection import FeatureSelection as FS 
 from sklearn.metrics import log_loss
 import lightgbm as lgbm
 import pandas as pd

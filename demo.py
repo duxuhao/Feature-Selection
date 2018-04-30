@@ -1,6 +1,6 @@
 # This demo based on IJCAI-2018 CVR prediction
 
-import FeatureSelection as FS
+from MLFeatureSelection import FeatureSelection
 from sklearn.metrics import log_loss
 import lightgbm as lgbm
 import pandas as pd

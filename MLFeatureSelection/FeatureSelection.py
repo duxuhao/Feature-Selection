@@ -61,7 +61,7 @@ class LRS_SA_RGSS_combination():
             #the greedy will loop again. otherwise, the selection complete
             print('test performance of initial features combination')
             self.bestscore, self.bestfeature = self.score, self.TemplUsedFeatures[:]
-            if self.TemplUsedFeatures != []:
+            if self.TemplUsedFeatures[:] != []:
                 self.validation(self.TemplUsedFeatures[:], str(0), 'baseline', coetest = 0)
             # greedy: forward + backward + Simulated Annealing
             if self.Process[0]:
@@ -181,7 +181,7 @@ class LRS_SA_RGSS_combination():
                     for add in self.bestfeature:
                         selectcol.append(add)
                     self.validation(selectcol, str(i), str(recordadd))
-        except:
+        except: #when there is not enough feature for selection
             pass
         print('{0}{1}{2}'.format('-' * 20, 'complete random', '-' * 20))
 
@@ -279,4 +279,4 @@ class Select():
             a.select()
         finally:
             with open(self.logfile, 'a') as f:
-                f.write('\n{}\n%{}%\n'.format(self.temp,'-'*60))
+                f.write('\n{}\n{}\n%{}%\n'.format('Done',self.temp,'-'*60))
