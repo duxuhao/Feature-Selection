@@ -3,6 +3,12 @@ This code is for general features selection based on certain machine learning al
 
 More features selection method will be included in the future!
 
+More examples are added in example folder include:
+
+- Simple Titanic with 5-fold validation and evaluated by accuracy
+
+- Demo for S1 score improvement in JData 2018 predict purchase time competition
+
 To run the demo, please install via pip3
 
 ```
@@ -10,9 +16,9 @@ pip3 install MLFeatureSelection
 ```
 Demo is [here!](https://pypi.org/project/MLFeatureSelection/)
 
-## How to run after git clone
+## How to run
 
-The demo is based on the IJCAI-2018 data moning competitions
+This demo is based on the IJCAI-2018 data moning competitions
 
 - Import library from FeatureSelection.py and also other necessary library
 
@@ -142,6 +148,8 @@ see complete code in demo.py
 - **1st** in Rong360
 
    -- https://github.com/duxuhao/rong360-season2
+   
+- **Top 10** in JData-2018 (Peter Du)
 
 - **12nd** in IJCAI-2018 1st round
 
