@@ -1,7 +1,6 @@
 from sklearn.linear_model import LogisticRegression
 from MLFeatureSelection import FeatureSelection as FS
 from sklearn.metrics import log_loss
-import lightgbm as lgbm
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import KFold
@@ -44,16 +43,15 @@ CrossMethod = {'+':add,
                '/':divide,}
 
 def main():
-    sf = FS.Select(Sequence = True, Random = True, Cross = True)
+    sf = FS.Select(Sequence = True, Random = False, Cross = True)
     sf.ImportDF(prepareData(),label = 'Survived')
     sf.ImportLossFunction(modelscore,direction = 'ascend')
     sf.ImportCrossMethod(CrossMethod)
-    sf.NonTrainableFeatures = ['Survived']
+    sf.InitialNonTrainableFeatures(['Survived'])
     sf.InitialFeatures([])
-    sf.PotentialAdd = ['Pclass']
-    #sf.clf = lgbm.LGBMClassifier(random_state=1, num_leaves = 6, n_estimators=5000, max_depth=3, learning_rate = 0.05, n_jobs=1)
+    sf.AddPotentialFeatures(['Pclass'])
     sf.clf = LogisticRegression()
-    sf.logfile = 'record.log'
+    sf.SetLogFile('record.log')
     sf.run(validation)
 
 if __name__ == "__main__":

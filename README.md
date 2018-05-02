@@ -106,7 +106,7 @@ sf.ImportCrossMethod(CrossMethod)
 - Define non-trainable features
 
 ```python
-sf.NonTrainableFeatures = ['used','instance_id', 'item_property_list', 'context_id', 'context_timestamp', 'predict_category_property', 'is_trade']
+sf.InitialNonTrainableFeatures(['used','instance_id', 'item_property_list', 'context_id', 'context_timestamp', 'predict_category_property', 'is_trade'])
 ```
 
 - Define initial features' combination
@@ -124,7 +124,7 @@ sf.clf = lgbm.LGBMClassifier(random_state=1, num_leaves = 6, n_estimators=5000, 
 - Define log file name
 
 ```python
-sf.logfile = 'record.log'
+sf.SetLogFile('record.log')
 ```
 
 - Run with self-define validate method

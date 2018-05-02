@@ -53,10 +53,10 @@ def main():
     sf.ImportDF(prepareData(),label = 'is_trade')
     sf.ImportLossFunction(modelscore,direction = 'descend')
     sf.ImportCrossMethod(CrossMethod)
-    sf.NonTrainableFeatures = ['used','instance_id', 'item_property_list', 'context_id', 'context_timestamp', 'predict_category_property', 'is_trade']
+    sf.InitialNonTrainableFeatures(['used','instance_id', 'item_property_list', 'context_id', 'context_timestamp', 'predict_category_property', 'is_trade'])
     sf.InitialFeatures(['item_category_list', 'item_price_level','item_sales_level','item_collected_level', 'item_pv_level','day'])
     sf.clf = lgbm.LGBMClassifier(random_state=1, num_leaves = 6, n_estimators=5000, max_depth=3, learning_rate = 0.05, n_jobs=8)
-    sf.logfile = 'record.log'
+    sf.SetLogFile('record.log')
     sf.run(validation)
 
 if __name__ == "__main__":
