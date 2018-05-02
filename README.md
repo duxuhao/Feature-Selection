@@ -149,7 +149,7 @@ see complete code in demo.py
 
    -- https://github.com/duxuhao/rong360-season2
    
-- **Top 10** in JData-2018 (Peter Du)
+- **Temporary Top 10** in JData-2018 (Peter Du)
 
 - **12nd** in IJCAI-2018 1st round
 
