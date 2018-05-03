@@ -26,8 +26,8 @@ def DefaultValidation(X, y, features, clf, lossfunction, fit_params=None):
 
 class _LRS_SA_RGSS_combination(object):
 
-    def __init__(self, clf, fit_params, df, RecordFolder, columnname, start, label,
-                 Process, direction, LossFunction, validatefunction=0,
+    def __init__(self, df, RecordFolder, columnname, start, label, Process,
+                 direction, LossFunction, clf, fit_params = None, validatefunction=0,
                  PotentialAdd=[], CrossMethod=0, CoherenceThreshold=1):
         self._clf = clf
         self._fit_params = fit_params
@@ -121,7 +121,7 @@ class _LRS_SA_RGSS_combination(object):
         selectcol = list(OrderedDict.fromkeys(selectcol))
         X, y = self._df, self._df[self._Label]
         totaltest = self._validatefunction(X, y, selectcol,
-                                           self._clf, self._LossFunction, self._fit_params)
+                                           self._clf, self._LossFunction) #, self._fit_params)
         print('Mean loss: {}'.format(totaltest))
         # only when the score improve, the program will record,
         # change the operator ( < or > ) according to your evalulation function
