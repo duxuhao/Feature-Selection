@@ -13,23 +13,24 @@ import random
 import numpy as np
 from sklearn.model_selection import KFold
 
-def DefaultValidation(X, y, features, clf, lossfunction):
+def DefaultValidation(X, y, features, clf, lossfunction, fit_params=None):
     totaltest = []
     kf = KFold(5)
     for train_index, test_index in kf.split(X):
         X_train, X_test = X.ix[train_index,:][features], X.ix[test_index,:][features]
         y_train, y_test = y.ix[train_index,:].Label, y.ix[test_index,:].Label
-        clf.fit(X_train, y_train)
+        clf.fit(X_train, y_train, **fit_params)
         totaltest.append(lossfunction(y_test, clf.predict_proba(X_test)[:,1]))
     return np.mean(totaltest)
 
 
 class _LRS_SA_RGSS_combination(object):
 
-    def __init__(self, clf, df, RecordFolder, columnname, start, label,
+    def __init__(self, clf, fit_params, df, RecordFolder, columnname, start, label,
                  Process, direction, LossFunction, validatefunction=0,
                  PotentialAdd=[], CrossMethod=0, CoherenceThreshold=1):
         self._clf = clf
+        self._fit_params = fit_params
         self._LossFunction = LossFunction
         self._df = df
         self._RecordFolder = RecordFolder
@@ -120,7 +121,7 @@ class _LRS_SA_RGSS_combination(object):
         selectcol = list(OrderedDict.fromkeys(selectcol))
         X, y = self._df, self._df[self._Label]
         totaltest = self._validatefunction(X, y, selectcol,
-                                           self._clf, self._LossFunction)
+                                           self._clf, self._LossFunction, self._fit_params)
         print('Mean loss: {}'.format(totaltest))
         # only when the score improve, the program will record,
         # change the operator ( < or > ) according to your evalulation function
@@ -365,6 +366,16 @@ class Select(object):
             cc: float, the upper bound of correlation coefficient
         """
         self._CoherenceThreshold = cc
+
+    def SetClassifier(self, clf, fit_params=None):
+        """Set the classifier and its fit_params
+
+        Args:
+            clf: estimator object, defined algorithm to train and evaluate features
+            fit_params, dict, optional, parameters to pass to the fit method
+        """
+        self.clf = clf
+        self.fit_params = fit_params = fit_params if fit_params is not None else {}
 
     def run(self,validate):
         """start running the selecting algorithm
