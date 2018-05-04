@@ -10,8 +10,10 @@
 from scipy.stats import pearsonr
 from collections import OrderedDict
 import random
+import time
 import numpy as np
 from sklearn.model_selection import KFold
+import sys
 
 def DefaultValidation(X, y, features, clf, lossfunction, fit_params=None):
     totaltest = []
@@ -23,11 +25,24 @@ def DefaultValidation(X, y, features, clf, lossfunction, fit_params=None):
         totaltest.append(lossfunction(y_test, clf.predict_proba(X_test)[:,1]))
     return np.mean(totaltest)
 
+def _reachlimit(func):
+    def wrapper(c):
+        temp = func(c)
+        if (len(c._TemplUsedFeatures) >= c._FeaturesQuanLimitation) | ((time.time() - c._StartTime) >= c._TimeLimitation):
+            print('{0}\nbest score:{1}\nbest {2} features combination: {3}'.format('*-*' * 50,
+                                                                                   c._score,
+                                                                                   c._FeaturesQuanLimitation,
+                                                                                   c._TemplUsedFeatures))
+            sys.exit()
+        return temp
+    return wrapper
 
 class _LRS_SA_RGSS_combination(object):
 
-    def __init__(self, df, RecordFolder, columnname, start, label, Process,
-                 direction, LossFunction, clf, fit_params = None, validatefunction=0,
+    def __init__(self, clf, df, RecordFolder, columnname, start, label,
+                 Process, direction, LossFunction, FeaturesQuanLimitation,
+                 TimeLimitation, SampleRatio=1, SampleMode=1, SampleState=0,
+                 fit_params=None, validatefunction=0,
                  PotentialAdd=[], CrossMethod=0, CoherenceThreshold=1):
         self._clf = clf
         self._fit_params = fit_params
@@ -45,6 +60,20 @@ class _LRS_SA_RGSS_combination(object):
         if self._validatefunction == 0:
             self._validatefunction = DefaultValidation # DefaultValidation is 5-fold
         self._coherenceThreshold = CoherenceThreshold
+        self._TimeLimitation = TimeLimitation * 60
+        self._FeaturesQuanLimitation = FeaturesQuanLimitation
+        self._bestfeature = self._TemplUsedFeatures[:]
+        self._StartTime = time.time()
+        self._fit_params = fit_params
+        if SampleRatio > 1:
+            self._sampleratio = 1
+        elif SampleRatio <= 0:
+            print("sample ratio should be positive, the set up sample ratio is wrong")
+            sys.exit()
+        else:
+            self._sampleratio = SampleRatio
+        self._samplestate = SampleState
+        self._samplemode = SampleMode
 
     def _evaluate(self, a, b):
         if self._direction == 'ascend':
@@ -53,6 +82,7 @@ class _LRS_SA_RGSS_combination(object):
             return a < b
 
     def select(self):
+        self._StartTime = time.time()
         #change them based on your evaluation function,
         #if smaller the better, self._score, self._greedyscore = 1, 0
         #if larger the better, self._score, self._greedyscore = 0, 1
@@ -118,8 +148,12 @@ class _LRS_SA_RGSS_combination(object):
                     addfeature,
                     coetest=0): #get the score with the new features list and update the best features combination
         """ set up your cross validation here"""
+        self.chekcLimit()
         selectcol = list(OrderedDict.fromkeys(selectcol))
-        X, y = self._df, self._df[self._Label]
+        self._samplestate += self._samplemode
+        tempdf = self._df.sample(frac = self._sampleratio, random_state = self._samplestate).reset_index(drop = True)
+        #X, y = self._df, self._df[self._Label]
+        X, y = tempdf, tempdf[self._Label]
         totaltest = self._validatefunction(X, y, selectcol,
                                            self._clf, self._LossFunction) #, self._fit_params)
         print('Mean loss: {}'.format(totaltest))
@@ -194,8 +228,9 @@ class _LRS_SA_RGSS_combination(object):
         print('{0}{1}{2}'.format('-' * 20, 'start random', '-' * 20))
         for i in self._bestfeature:
             col.remove(i)
-        try:
-            for t in range(3,8): # add 4 to 8 features randomly, choose your own range
+        random.seed(a = self._samplestate)
+        for t in range(3,8): # add 4 to 8 features randomly, choose your own range
+            if t < len(col):
                 print('add {} features'.format(t))
                 for i in range(50): # run 50 rounds each quantity, choose your own round number
                     selectcol = random.sample(col, t)
@@ -203,10 +238,13 @@ class _LRS_SA_RGSS_combination(object):
                     for add in self._bestfeature:
                         selectcol.append(add)
                     self._validation(selectcol, str(i), str(recordadd))
-        except: #when there is not enough feature for selection
-            pass
         print('{0}{1}{2}'.format('-' * 20, 'complete random', '-' * 20))
 
+    @_reachlimit
+    def chekcLimit(self):
+        return True
+
+    @_reachlimit
     def _ScoreUpdate(self):
         if self._direction == 'ascend':
             start = 0
@@ -287,6 +325,11 @@ class Select(object):
         self._PotentialAdd = []
         self._CrossMethod = 0
         self._CoherenceThreshold = 1
+        self._FeaturesLimit = np.inf
+        self._TimeLimit = np.inf
+        self._sampleratio = 1
+        self._samplestate = 0
+        self._samplemode = 1
 
     def SetLogFile(self, fn):
         """Setup the log file
@@ -342,14 +385,16 @@ class Select(object):
         """
         self._NonTrainableFeatures = features
 
-    def _obtaincol(self):
+    def GenerateCol(self, key=None, selectstep=1):
         """ for getting rid of the useless columns in the dataset
         """
         self.ColumnName = list(self._df.columns)
         for i in self._NonTrainableFeatures:
             if i in self.ColumnName:
                 self.ColumnName.remove(i)
-        return self.ColumnName
+        if key is not None:
+            self.ColumnName = [i for i in self.ColumnName if key in i]
+        self.ColumnName = self.ColumnName[::selectstep]
 
     def AddPotentialFeatures(self, features):
         """give some strong features you think might be useful.
@@ -367,6 +412,37 @@ class Select(object):
         """
         self._CoherenceThreshold = cc
 
+    def SetFeaturesLimit(self, FeaturesLimit):
+        """Set the features quantity limitation, when selected features reach
+           the quantity limitation, the algorithm will exit
+
+        Args:
+            FeaturesLimit: int, the features quantity limitation
+        """
+        self._FeaturesLimit = FeaturesLimit
+
+    def SetTimeLimit(self, TimeLimit):
+        """Set the running time limitation, when the running time
+           reach the time limit, the algorithm will exit
+
+        Args:
+            TimeLimit: double, the maximum time in minutes
+        """
+        self._TimeLimit = TimeLimit
+
+    def SetSample(self, ratio, samplestate=0, samplemode=1):
+        """Set the sample of all data
+
+        Args:
+            ratio: double, sample ratio
+            samplestate: int, seed
+            samplemode: positive int, if 0, every time they
+                        sample the same subset, default = 1
+        """
+        self._sampleratio = ratio
+        self._samplestate = samplestate
+        self._samplemode = samplemode
+
     def SetClassifier(self, clf, fit_params=None):
         """Set the classifier and its fit_params
 
@@ -383,9 +459,10 @@ class Select(object):
         Args:
             validate: validation method, eq. kfold, last day, etc
         """
-        self._obtaincol()
         with open(self._logfile, 'a') as f:
             f.write('\n{}\n%{}%\n'.format('Start!','-'*60))
+        print("Features Quantity Limit: {}".format(self._FeaturesLimit))
+        print("Time Limit: {} min(s)".format(self._TimeLimit))
         a = _LRS_SA_RGSS_combination(df = self._df, clf = self.clf,
                                     RecordFolder = self._logfile,
                                     LossFunction = self._modelscore,
@@ -396,7 +473,12 @@ class Select(object):
                                     PotentialAdd = self._PotentialAdd, # potential feature for Simulated Annealing
                                     Process = [self.Sequence, self.Random, self.Cross],
                                     direction = self._direction, validatefunction = validate,
-                                    CoherenceThreshold = self._CoherenceThreshold
+                                    CoherenceThreshold = self._CoherenceThreshold,
+                                    FeaturesQuanLimitation = self._FeaturesLimit,
+                                    TimeLimitation = self._TimeLimit,
+                                    SampleRatio = self._sampleratio,
+                                    SampleState = self._samplestate,
+                                    SampleMode = self._samplemode
                                     )
         try:
             a.select()

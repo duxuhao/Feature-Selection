@@ -9,6 +9,16 @@ More examples are added in example folder include:
 
 - Demo for S1 score improvement in JData 2018 predict purchase time competition
 
+## new features
+
+- Set sample ratio for large dataset
+
+- Set maximum quantity of features
+
+- Set maximum running time
+
+- Set certain features library
+
 To run the demo, please install via pip3
 
 ```
@@ -119,6 +129,30 @@ sf.InitialNonTrainableFeatures(['used','instance_id', 'item_property_list', 'con
 
 ```python
 sf.InitialFeatures(['item_category_list', 'item_price_level','item_sales_level','item_collected_level', 'item_pv_level'])
+```
+
+- Generate feature library, can specific certain key word and selection step
+
+```python
+sf.GenerateCol(key = 'mean', step = 2) #can iterate different features set
+```
+
+- Set maximum features quantity
+
+```python
+sf.SetFeaturesLimit(40) #maximum number of features
+```
+
+- Set maximum time limit (in minutes)
+
+```python
+sf.SetTimeLimit(100) #maximum running time in minutes
+```
+
+- Set sample ratio of total dataset, when samplemode equals to 0, running the same subset, when samplemode equals to 1, subset will be different each time
+
+```python
+sf.SetSample(0.1, samplemode = 0)
 ```
 
 - Define algorithm

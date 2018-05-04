@@ -1,6 +1,4 @@
-# This demo based on IJCAI-2018 CVR prediction
-
-from MLFeatureSelection import FeatureSelection
+from MLFeatureSelection import FeatureSelection as FS
 from sklearn.metrics import log_loss
 import lightgbm as lgbm
 import pandas as pd
@@ -8,7 +6,7 @@ import numpy as np
 
 def prepareData():
     """prepare you dataset here"""
-    df = pd.read_csv('IJCAI-2018/data/train/trainb.csv')
+    df = pd.read_csv('data/train/trainb.csv')
     df = df[~pd.isnull(df.is_trade)]
     item_category_list_unique = list(np.unique(df.item_category_list))
     df.item_category_list.replace(item_category_list_unique, list(np.arange(len(item_category_list_unique))), inplace=True)
@@ -49,14 +47,18 @@ CrossMethod = {'+':add,
                '/':divide,}
 
 def main():
-    sf = FS.Select(Sequence = False, Random = True, Cross = False) #select the way you want to process searching
+    sf = FS.Select(Sequence = True, Random = True, Cross = False) #select the way you want to process searching
     sf.ImportDF(prepareData(),label = 'is_trade')
     sf.ImportLossFunction(modelscore,direction = 'descend')
     sf.ImportCrossMethod(CrossMethod)
     sf.InitialNonTrainableFeatures(['used','instance_id', 'item_property_list', 'context_id', 'context_timestamp', 'predict_category_property', 'is_trade'])
     sf.InitialFeatures(['item_category_list', 'item_price_level','item_sales_level','item_collected_level', 'item_pv_level','day'])
+    sf.GenerateCol(key = 'mean', step = 2)
+    sf.SetSample(0.1, samplemode = 0, samplestate = 0)
+#    sf.SetFeaturesLimit(5)
+    sf.SetTimeLimit(1)
     sf.clf = lgbm.LGBMClassifier(random_state=1, num_leaves = 6, n_estimators=5000, max_depth=3, learning_rate = 0.05, n_jobs=8)
-    sf.SetLogFile('record.log')
+    sf.SetLogFile('recordml.log')
     sf.run(validation)
 
 if __name__ == "__main__":

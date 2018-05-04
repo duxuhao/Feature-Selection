@@ -49,9 +49,13 @@ def main():
     sf.ImportCrossMethod(CrossMethod)
     sf.InitialNonTrainableFeatures(['Survived'])
     sf.InitialFeatures([])
+    sf.GenerateCol()
+    sf.SetSample(0.5, samplemode = 0, samplestate = 0)
     sf.AddPotentialFeatures(['Pclass'])
     sf.clf = LogisticRegression()
-    sf.SetLogFile('record.log')
+    sf.SetLogFile('record2.log')
+#    sf.SetFeaturesLimit(5)
+    sf.SetTimeLimit(0.2)
     sf.run(validation)
 
 if __name__ == "__main__":

@@ -45,6 +45,9 @@ def main():
     sf.InitialFeatures(['age_x', 'sex_x', 'user_lv_cd_x', 'buycnt', 'daybeforelastbuy_o_ave'])
     #sf.PotentialAdd = ['daybeforelastbuy_o_mean']
     #sf.clf = lgbm.LGBMClassifier(random_state=1, num_leaves = 6, n_estimators=5000, max_depth=3, learning_rate = 0.05, n_jobs=1)
+    sf.GenerateCol()
+    sf.SetSample(0.8, samplemode = 1)
+    sf.SetTimeLimit(1)
     sf.clf = lgbm.LGBMClassifier(random_state=1, num_leaves = 6, n_estimators=1000, max_depth=3, learning_rate = 0.2, n_jobs=8)
     sf.SetLogFile('record.log')
     sf.run(validate)
