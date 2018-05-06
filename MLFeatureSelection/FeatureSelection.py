@@ -151,7 +151,10 @@ class _LRS_SA_RGSS_combination(object):
         self.chekcLimit()
         selectcol = list(OrderedDict.fromkeys(selectcol))
         self._samplestate += self._samplemode
-        tempdf = self._df.sample(frac = self._sampleratio, random_state = self._samplestate).reset_index(drop = True)
+        if self._sampleratio < 1:
+            tempdf = self._df.sample(frac = self._sampleratio, random_state = self._samplestate).reset_index(drop = True)
+        else:
+            tempdf = self._df
         #X, y = self._df, self._df[self._Label]
         X, y = tempdf, tempdf[self._Label]
         totaltest = self._validatefunction(X, y, selectcol,

@@ -21,6 +21,10 @@ More examples are added in example folder include:
 
 To run the demo, please install via pip3
 
+## version update
+
+- version 0.0.4.1: fix bug of sampling when sample ratio equals to 1
+
 ```
 pip3 install MLFeatureSelection
 ```
