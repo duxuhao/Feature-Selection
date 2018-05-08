@@ -9,14 +9,6 @@ More examples are added in example folder include:
 
 - Demo for S1 score improvement in JData 2018 predict purchase time competition
 
-## coming plans
-
-- Initial features with high correlation with label
-
-- Initial features with high AIC, BIC
-
-- Initial new selection method based on features importance
-
 ## new features
 
 - Set sample ratio for large dataset
