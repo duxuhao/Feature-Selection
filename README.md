@@ -13,7 +13,7 @@ More examples are added in example folder include:
 
 - Initial features with high correlation with label
 
-- Initial features with high AIS, BIS
+- Initial features with high AIC, BIC
 
 - Initial new selection method based on features importance
 
