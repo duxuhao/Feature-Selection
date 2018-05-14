@@ -230,7 +230,8 @@ class _LRS_SA_RGSS_combination(object):
         col = self._columnname[:]
         print('{0}{1}{2}'.format('-' * 20, 'start random', '-' * 20))
         for i in self._bestfeature:
-            col.remove(i)
+            if i in col:
+                col.remove(i)
         random.seed(a = self._samplestate)
         for t in range(3,8): # add 4 to 8 features randomly, choose your own range
             if t < len(col):
