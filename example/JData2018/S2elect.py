@@ -56,15 +56,15 @@ def validate(X, y, features, clf, score): #测评系统
 
 def main():
     sf = FS.Select(Sequence = True, Random = False, Cross = False) #初始化选择器，选择你需要的流程
-    sf.ImportDF(df,label = 'nextbuy') #导入数据集以及目标标签
-    sf.ImportLossFunction(score, direction = 'ascend') #导入评价函数以及优化方向
-    sf.InitialNonTrainableFeatures(['buy','nextbuy','o_date','a_date','PredictDays','user_id']) #初始化不能用的特征
-    sf.InitialFeatures(['age_x', 'sex_x', 'user_lv_cd_x', 'buycnt', 'daybeforelastbuy_o_ave']) #初始化其实特征组合
-    sf.GenerateCol() #生成特征库 （具体该函数变量请参考根目录下的readme）
-    sf.SetSample(1, samplemode = 1) #初始化抽样比例和随机过程
-    sf.SetTimeLimit(100) #设置算法运行最长时间，以分钟为单位
+    sf.import_df(df, label='nextbuy')  #导入数据集以及目标标签
+    sf.import_loss_function(score, direction='ascend')  #导入评价函数以及优化方向
+    sf.initial_non_trainable_features(['buy', 'nextbuy', 'o_date', 'a_date', 'PredictDays', 'user_id'])  #初始化不能用的特征
+    sf.initial_features(['age_x', 'sex_x', 'user_lv_cd_x', 'buycnt', 'daybeforelastbuy_o_ave'])  #初始化其实特征组合
+    sf.generate_col()  #生成特征库 （具体该函数变量请参考根目录下的readme）
+    sf.set_sample(1, sample_mode=1)  #初始化抽样比例和随机过程
+    sf.set_time_limit(100)  #设置算法运行最长时间，以分钟为单位
     sf.clf = lgbm.LGBMRegressor(random_state=1, num_leaves =6, n_estimators=1000, max_depth=3, learning_rate = 0.2, n_jobs=8) #设定回归模型
-    sf.SetLogFile('record.log') #初始化日志文件
+    sf.set_log_file('record.log')  #初始化日志文件
     sf.run(validate) #输入检验函数并开始运行
 
 if __name__ == "__main__":
