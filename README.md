@@ -108,13 +108,13 @@ sf = FS.Select(Sequence = False, Random = True, Cross = False) #select the way y
 - Import loss function
 
 ```python
-sf.ImportLossFunction(modelscore,direction = 'descend')
+sf.ImportLossFunction(modelscore, direction = 'descend')
 ```
 
 - Import dataset
 
 ```python
-sf.ImportDF(prepareData(),label = 'is_trade')
+sf.ImportDF(prepareData(), label = 'is_trade')
 ```
 
 - Import cross method (required when *Cross = True*)
@@ -138,7 +138,7 @@ sf.InitialFeatures(['item_category_list', 'item_price_level','item_sales_level',
 - Generate feature library, can specific certain key word and selection step
 
 ```python
-sf.GenerateCol(key = 'mean', step = 2) #can iterate different features set
+sf.GenerateCol(key = 'mean', selectstep = 2) #can iterate different features set
 ```
 
 - Set maximum features quantity
