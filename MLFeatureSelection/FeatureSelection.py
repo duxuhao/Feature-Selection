@@ -87,9 +87,9 @@ class _LRS_SA_RGSS_combination(object):
         #if smaller the better, self._score, self._greedyscore = 1, 0
         #if larger the better, self._score, self._greedyscore = 0, 1
         if self._direction == 'ascend':
-            self._score, self._greedyscore = 0, 1
+            self._score, self._greedyscore = -np.inf, np.inf
         else:
-            self._score, self._greedyscore = 1, 0
+            self._score, self._greedyscore = np.inf, -np.inf
         self.remain = '' # for initial
         self._first = 1
         while self._evaluate(self._score, self._greedyscore) | self._first:
@@ -251,9 +251,9 @@ class _LRS_SA_RGSS_combination(object):
     @_reachlimit
     def _ScoreUpdate(self):
         if self._direction == 'ascend':
-            start = 0
+            start = -np.inf
         else:
-            start = 1
+            start = np.inf
         if self._score == start:
             return True
         elif self._evaluate(self._score, self.bestscore):

@@ -53,7 +53,7 @@ def main():
     sf.ImportCrossMethod(CrossMethod)
     sf.InitialNonTrainableFeatures(['used','instance_id', 'item_property_list', 'context_id', 'context_timestamp', 'predict_category_property', 'is_trade'])
     sf.InitialFeatures(['item_category_list', 'item_price_level','item_sales_level','item_collected_level', 'item_pv_level','day'])
-    sf.GenerateCol(key = 'mean', step = 2)
+    sf.GenerateCol(key = 'mean', selectstep = 2)
     sf.SetSample(0.1, samplemode = 0, samplestate = 0)
 #    sf.SetFeaturesLimit(5)
     sf.SetTimeLimit(1)
