@@ -140,7 +140,7 @@ sf.InitialFeatures(['item_category_list', 'item_price_level','item_sales_level',
 ```python
 
 sf.GenerateCol(key = 'mean', selectstep = 2) #can iterate different features set
-
+```
 
 - Set maximum features quantity
 
