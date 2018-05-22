@@ -13,10 +13,6 @@ More examples are added in example folder include:
 
 - remove features based on features importance by
 
-## PLAN
-
-- better API introduction will be completed next before the end of 06/2018
-
 ```python
 from MLFeatureSelection import importance_selection as IS
 def main():
@@ -32,12 +28,15 @@ def main():
     sf.run(validate) #run with validation function
 ```
 
-To run the demo, please install via pip3
+## PLAN
+
+- better API introduction will be completed next before the end of 06/2018
+
+To run the [demo](https://github.com/duxuhao/Feature-Selection/tree/master/example), please install via pip3
 
 ```
 pip3 install MLFeatureSelection
 ```
-Demo is [here!](https://pypi.org/project/MLFeatureSelection/)
 
 ## How to run
 
