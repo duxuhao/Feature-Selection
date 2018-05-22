@@ -23,7 +23,9 @@ To run the demo, please install via pip3
 
 ## version update
 
-- version 0.0.4.1: fix bug of sampling when sample ratio equals to 1
+- version 0.0.5:
+
+alpha version for removing features based on features importance. demo is coming soon
 
 ```
 pip3 install MLFeatureSelection
