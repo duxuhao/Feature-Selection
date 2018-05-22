@@ -9,23 +9,30 @@ More examples are added in example folder include:
 
 - Demo for S1 score improvement in JData 2018 predict purchase time competition
 
-## new features
+## new features version 0.0.5
 
-- Set sample ratio for large dataset
+- remove features based on features importance by
 
-- Set maximum quantity of features
+## PLAN
 
-- Set maximum running time
+- better API introduction will be completed next before the end of 06/2018
 
-- Set certain features library
+```python
+from MLFeatureSelection import importance_selection as IS
+def main():
+    sf = IS.Select() 
+    sf.ImportDF(read1(),label = 'buy') #import dataframe and label
+    sf.ImportLossFunction(score1, direction = 'ascend') #import loss function and optimize direction
+    sf.InitialNonTrainableFeatures(['buy','nextbuy','o_date','a_date','PredictDays','user_id']) #useless features
+    sf.InitialFeatures([]) #initial features
+    sf.GenerateCol() #useless delete in later version
+    sf.SelectRemoveMode(batch = 2)
+    sf.clf = xgb.XGBClassifier(seed=2018, max_depth = 6, n_estimators = 1000, nthread = -1, learning_rate=0.05, colsample_bytree=0.8, subsample=0.9)
+    sf.SetLogFile('record_si2.log') #log file
+    sf.run(validate) #run with validation function
+```
 
 To run the demo, please install via pip3
-
-## version update
-
-- version 0.0.5:
-
-alpha version for removing features based on features importance. demo is coming soon
 
 ```
 pip3 install MLFeatureSelection
@@ -39,7 +46,7 @@ This demo is based on the IJCAI-2018 data moning competitions
 - Import library from FeatureSelection.py and also other necessary library
 
 ```python
-from MLFeatureSelection import FeatureSelection as FS 
+from MLFeatureSelection import sequence_selection as FS 
 from sklearn.metrics import log_loss
 import lightgbm as lgbm
 import pandas as pd
