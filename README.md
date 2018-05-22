@@ -23,7 +23,7 @@ def main():
     sf.InitialFeatures([]) #initial features
     sf.GenerateCol() #useless delete in later version
     sf.SelectRemoveMode(batch = 2)
-    sf.clf = xgb.XGBClassifier(seed=2018, max_depth = 6, n_estimators = 1000, nthread = -1, learning_rate=0.05, colsample_bytree=0.8, subsample=0.9)
+    sf.clf = xgb.XGBClassifier(n_estimators = 1000)
     sf.SetLogFile('record_si2.log') #log file
     sf.run(validate) #run with validation function
 ```
