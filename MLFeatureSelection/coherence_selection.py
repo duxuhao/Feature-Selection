@@ -32,7 +32,7 @@ def _reachlimit(func):
 
 class _coherence_selection(object):
 
-    def __init__(self, clf, df, RecordFolder, columnname, start, label,
+    def __init__(self, clf, df, RecordFolder, start, label,
                  direction, LossFunction, FeaturesQuanLimitation, TimeLimitation,
                  fit_params=None, validatefunction=0,coherencelowerbound=0.8,
                  selectbatch=1, selectfrac=1):
@@ -41,7 +41,6 @@ class _coherence_selection(object):
         self._LossFunction = LossFunction
         self._df = df
         self._RecordFolder = RecordFolder
-        self._columnname = columnname
         self._TemplUsedFeatures, self._Label = start, label
         self._Startcol = ['None']
         self._validatefunction = validatefunction
@@ -106,6 +105,7 @@ class _coherence_selection(object):
             f.write('{0}\nbest score:{1}\nbest features combination: {2}'.format('*-*' * 50,
                                                                            self.bestscore,
                                                                            self._bestfeature))
+        return self._bestfeature
 
     def _validation(self,
                     selectcol,
@@ -210,24 +210,6 @@ class Select(object):
         """
         self._temp = features
 
-    def InitialNonTrainableFeatures(self, features):
-        """Setting the nontrainable features, eq. user_id
-        Args:
-            features: list, the nontrainable features
-        """
-        self._NonTrainableFeatures = features
-
-    def GenerateCol(self, key=None, selectstep=1):
-        """ for getting rid of the useless columns in the dataset
-        """
-        self.ColumnName = list(self._df.columns)
-        for i in self._NonTrainableFeatures:
-            if i in self.ColumnName:
-                self.ColumnName.remove(i)
-        if key is not None:
-            self.ColumnName = [i for i in self.ColumnName if key in i]
-        self.ColumnName = self.ColumnName[::selectstep]
-
     def SelectRemoveMode(self, lowerbound = 0.8, frac = 1, batch = 1):
         self._lowerbound = lowerbound
         self._frac = frac
@@ -283,7 +265,6 @@ class Select(object):
                                     RecordFolder = self._logfile,
                                     LossFunction = self._modelscore,
                                     label = self._label,
-                                    columnname = self.ColumnName[:],
                                     start = self._temp,
                                     FeaturesQuanLimitation = self._FeaturesLimit,
                                     TimeLimitation = self._TimeLimit,
@@ -294,7 +275,10 @@ class Select(object):
                                     validatefunction = validate,
                                     )
         try:
-            a.select()
+            best_features_comb = a.select()
+        except:
+            best_features_comb = a._bestfeature
         finally:
             with open(self._logfile, 'a') as f:
                 f.write('\n{}\n{}\n%{}%\n'.format('Done',self._temp,'-'*60))
+        return best_features_comb

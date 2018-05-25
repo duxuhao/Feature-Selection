@@ -112,7 +112,9 @@ class _LRS_SA_RGSS_combination(object):
             print('random select starts with:\n {0}\n score: {1}'.format(self._bestfeature,
                                                                          self._greedyscore))
             # random selection
-            if self.Process[1]:
+            if len(self.Process[1])==2:
+                self._MyRandom(self.Process[1])
+            elif self.Process[1]==True:
                 self._MyRandom()
 
             if self.Process[2] & (self._first == 1): # avoid cross term twice until it is fix
@@ -149,6 +151,7 @@ class _LRS_SA_RGSS_combination(object):
             f.write('{0}\nbest score:{1}\nbest features combination: {2}'.format('*-*' * 50,
                                                                            self.bestscore,
                                                                            self._bestfeature))
+        return self._bestfeature
 
     def _validation(self,
                     selectcol,
@@ -183,7 +186,11 @@ class _LRS_SA_RGSS_combination(object):
                     f.write('{0}  {1}  {2}:\n{3}\t{4}\n'.format(num, addfeature,
                                                                 np.abs(np.max(cc)),
                                                                 np.round(np.mean(totaltest),6),
-                                                                selectcol[:], '*-' * 50))
+                                                                selectcol[:]))
+                    f.write('*{}\n'.format(np.round(np.mean(totaltest),6)))
+                    for s in selectcol[:]:
+                        f.write('{} '.format(s))
+                    f.write('\n')
                 self._TemplUsedFeatures, self._score = selectcol[:], np.mean(totaltest)
                 if num == 'reverse':
                     self.dele = addfeature
@@ -233,7 +240,7 @@ class _LRS_SA_RGSS_combination(object):
                     self._PotentialAdd.remove(i)
         print('{0}{1}{2}'.format('-' * 20, 'complete greedy', '-' * 20))
 
-    def _MyRandom(self):
+    def _MyRandom(self,rl=[range(3,9),50]):
         self._ScoreUpdate()
         col = self._columnname[:]
         print('{0}{1}{2}'.format('-' * 20, 'start random', '-' * 20))
@@ -241,10 +248,10 @@ class _LRS_SA_RGSS_combination(object):
             if i in col:
                 col.remove(i)
         random.seed(a = self._samplestate)
-        for t in range(3,8): # add 4 to 8 features randomly, choose your own range
+        for t in rl[0]:
             if t < len(col):
                 print('add {} features'.format(t))
-                for i in range(50): # run 50 rounds each quantity, choose your own round number
+                for i in range(rl[1]):
                     selectcol = random.sample(col, t)
                     recordadd = selectcol[:]
                     for add in self._bestfeature:
@@ -493,8 +500,10 @@ class Select(object):
                                     SampleMode = self._samplemode
                                     )
         try:
-            a.select()
+            best_feature_comb = a.select()
+        except:
+           best_feature_comb = a._bestfeature
         finally:
             with open(self._logfile, 'a') as f:
                 f.write('\n{}\n{}\n%{}%\n'.format('Done',self._temp,'-'*60))
-
+        return best_feature_comb
