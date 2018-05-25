@@ -9,9 +9,11 @@ More examples are added in example folder include:
 
 - Demo for S1 score improvement in JData 2018 predict purchase time competition
 
-## new features version 0.0.5
+## new features version 0.0.6.1
 
-- remove features based on features importance by
+- remove features based on features importance
+
+- remove features based on correlation coefficient
 
 ```python
 from MLFeatureSelection import importance_selection as IS
@@ -19,9 +21,7 @@ def main():
     sf = IS.Select() 
     sf.ImportDF(read1(),label = 'buy') #import dataframe and label
     sf.ImportLossFunction(score1, direction = 'ascend') #import loss function and optimize direction
-    sf.InitialNonTrainableFeatures(['buy','nextbuy','o_date','a_date','PredictDays','user_id']) #useless features
     sf.InitialFeatures([]) #initial features
-    sf.GenerateCol() #useless delete in later version
     sf.SelectRemoveMode(batch = 2)
     sf.clf = xgb.XGBClassifier(n_estimators = 1000)
     sf.SetLogFile('record_si2.log') #log file

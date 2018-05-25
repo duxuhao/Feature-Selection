@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 ##############################################
-# File Name: importance_selection.py
+# File Name: coherence_selection.py
 # Author: Xuhao Du
 # Email: duxuhao88@gmail.com
 ##############################################
@@ -30,17 +30,18 @@ def _reachlimit(func):
         return temp
     return wrapper
 
-class _importsance_selection(object):
+class _coherence_selection(object):
 
-    def __init__(self, clf, df, RecordFolder, start, label,
+    def __init__(self, clf, df, RecordFolder, columnname, start, label,
                  direction, LossFunction, FeaturesQuanLimitation, TimeLimitation,
-                 fit_params=None, validatefunction=0,important_update=1,
-                 selectkey='', selectbatch=1, selectfrac=1):
+                 fit_params=None, validatefunction=0,coherencelowerbound=0.8,
+                 selectbatch=1, selectfrac=1):
         self._clf = clf
         self._fit_params = fit_params
         self._LossFunction = LossFunction
         self._df = df
         self._RecordFolder = RecordFolder
+        self._columnname = columnname
         self._TemplUsedFeatures, self._Label = start, label
         self._Startcol = ['None']
         self._validatefunction = validatefunction
@@ -50,9 +51,8 @@ class _importsance_selection(object):
         self._fit_params = fit_params
         self._frac = selectfrac
         self._batch = selectbatch
-        self._key = selectkey
+        self._lowerbound = coherencelowerbound
         self._direction = direction
-        self._update_imp = important_update
 
     def _evaluate(self, a, b):
         if self._direction == 'ascend':
@@ -70,7 +70,7 @@ class _importsance_selection(object):
         self.bestscore, self._bestfeature = self._score, self._TemplUsedFeatures[:]
         self._validation(self._TemplUsedFeatures[:], str(0), 'baseline')
         selectcol = self._TemplUsedFeatures[:]
-        removelist = [i for i in selectcol if self._key in i]
+        removelist = selectcol[:]
         if self._frac != 1:
             n = int(len(removelist) * self._frac)
         else:
@@ -79,19 +79,22 @@ class _importsance_selection(object):
             n = 1
         print('Remove Batch: {}'.format(n))
         iter_num = 0
-        while len(selectcol) > 1:
+        cc = self._removediag(self._df[selectcol[:]].corr()).abs().max().max()
+        print('totally {} features above {}'.format(np.sum(self._removediag(self._df[selectcol[:]].corr()).abs().max() > self._lowerbound),self._lowerbound))
+        while (cc >= self._lowerbound) & (len(selectcol) > 1):
             temp = selectcol[:]
-            if self._update_imp | (iter_num == 0):
-                importances = sorted([[i,j] for i,j in zip(self._clf.feature_importances_,list(OrderedDict.fromkeys(temp)))])
-                index_step = 0
             deletenum = 0
             removed = []
-            while (deletenum < n) & (index_step < len(temp)):
-                if (importances[index_step][1] in removelist) & (importances[index_step][1] in temp):
-                    temp.remove(importances[index_step][1])
-                    removed.append(importances[index_step][1])
-                    deletenum += 1
-                index_step += 1
+            t = self._removediag(self._df[temp].corr())
+            cc = t.abs().max().max()
+            while (deletenum < n) & (cc >= self._lowerbound):
+                tempdelete = t[t.abs().max() == t.abs().max().max()].abs().sum(axis = 1).argmax()
+                print('Delete {} with coherence {}'.format(tempdelete,cc))
+                temp.remove(tempdelete)
+                removed.append(tempdelete)
+                deletenum += 1
+                t = self._removediag(self._df[temp].corr())
+                cc = t.abs().max().max()
             self._validation(temp[:], str(iter_num), str(removed))
             iter_num += 1
             selectcol = temp[:]
@@ -103,7 +106,6 @@ class _importsance_selection(object):
             f.write('{0}\nbest score:{1}\nbest features combination: {2}'.format('*-*' * 50,
                                                                            self.bestscore,
                                                                            self._bestfeature))
-        return self._bestfeature
 
     def _validation(self,
                     selectcol,
@@ -114,19 +116,20 @@ class _importsance_selection(object):
         selectcol = list(OrderedDict.fromkeys(selectcol))
         tempdf = self._df
         X, y = tempdf, tempdf[self._Label]
-        totaltest, self._clf = self._validatefunction(X, y, selectcol, self._clf, self._LossFunction) #, self._fit_params)
+        totaltest = self._validatefunction(X, y, selectcol, self._clf, self._LossFunction) #, self._fit_params)
         print('remove features: {}'.format(rmfeature))
         print('Mean loss: {}'.format(totaltest))
         if self._ScoreUpdate():
             with open(self._RecordFolder, 'a') as f: #record all the imporved combination
                 f.write('{0}  {1}:\n{2}\t{3}\n'.format(num, rmfeature,
                                                             np.round(np.mean(totaltest),6),
-                                                            selectcol[:]))
-                f.write('*{}\n'.format(np.round(np.mean(totaltest),6)))
-                for s in selectcol[:]:
-                    f.write('{} '.format(s))
-                f.write('\n')
+                                                            selectcol[:], '*-' * 50))
             self._TemplUsedFeatures, self._score = selectcol[:], np.mean(totaltest)
+
+    def _removediag(self,df):
+        for i in df.columns:
+            df.ix[i,i] = 0
+        return df
 
     @_reachlimit
     def chekcLimit(self):
@@ -147,22 +150,15 @@ class _importsance_selection(object):
 
 class Select(object):
     """This is a class for importances features selection
-
     The functions needed to be called before running include:
-
         ImportDF(pd.dataframe, str) - import you complete dataset including the label column
-
         ImportLossFunction(func, str) - import your self define loss function,
                                         eq. logloss, accuracy, etc
-
         InitialFeatures(list) - Initial your starting features combination,
                                 if the initial features combination include
                                 all features, the backward sequence searching
                                 will run automatically
-
         InitialNonTrainableFeatures(list) - Initial the non-trainable features
-
-
         run(func) - start selecting features
     """
 
@@ -178,10 +174,10 @@ class Select(object):
         self._frac = 1
         self._batch = 1
         self._key = ''
+        self._lowerbound = 0.8
 
     def SetLogFile(self, fn):
         """Setup the log file
-
         Args:
             fn: str, filename
         """
@@ -189,7 +185,6 @@ class Select(object):
 
     def ImportDF(self, df, label):
         """Import pandas dataframe to the class
-
         Args:
             df: pandas dataframe include all features and label.
             label: str, label name
@@ -199,7 +194,6 @@ class Select(object):
 
     def ImportLossFunction(self, modelscore, direction):
         """Import the loss function
-
         Args:
             modelscore: the function to calculate the loss result
                         with two input series
@@ -211,22 +205,37 @@ class Select(object):
 
     def InitialFeatures(self,features):
         """Initial your starting features combination
-
         Args:
             features: list, the starting features combination
         """
         self._temp = features
 
-    def SelectRemoveMode(self, frac = 1, batch = 1, key = ''):
+    def InitialNonTrainableFeatures(self, features):
+        """Setting the nontrainable features, eq. user_id
+        Args:
+            features: list, the nontrainable features
+        """
+        self._NonTrainableFeatures = features
+
+    def GenerateCol(self, key=None, selectstep=1):
+        """ for getting rid of the useless columns in the dataset
+        """
+        self.ColumnName = list(self._df.columns)
+        for i in self._NonTrainableFeatures:
+            if i in self.ColumnName:
+                self.ColumnName.remove(i)
+        if key is not None:
+            self.ColumnName = [i for i in self.ColumnName if key in i]
+        self.ColumnName = self.ColumnName[::selectstep]
+
+    def SelectRemoveMode(self, lowerbound = 0.8, frac = 1, batch = 1):
+        self._lowerbound = lowerbound
         self._frac = frac
         self._batch = batch
-        self._key = key
-
 
     def SetFeaturesLimit(self, FeaturesLimit):
         """Set the features quantity limitation, when selected features reach
            the quantity limitation, the algorithm will exit
-
         Args:
             FeaturesLimit: int, the features quantity limitation
         """
@@ -235,15 +244,13 @@ class Select(object):
     def SetTimeLimit(self, TimeLimit):
         """Set the running time limitation, when the running time
            reach the time limit, the algorithm will exit
-
         Args:
             TimeLimit: double, the maximum time in minutes
         """
         self._TimeLimit = TimeLimit
 
-    def SetSample(self, ratio, samplestate=0, samplemode=1, update_importance = 1):
+    def SetSample(self, ratio, samplestate=0, samplemode=1):
         """Set the sample of all data
-
         Args:
             ratio: double, sample ratio
             samplestate: int, seed
@@ -253,11 +260,9 @@ class Select(object):
         self._sampleratio = ratio
         self._samplestate = samplestate
         self._samplemode = samplemode
-        self._update_imp = update_importance
 
     def SetClassifier(self, clf, fit_params=None):
         """Set the classifier and its fit_params
-
         Args:
             clf: estimator object, defined algorithm to train and evaluate features
             fit_params, dict, optional, parameters to pass to the fit method
@@ -267,7 +272,6 @@ class Select(object):
 
     def run(self,validate):
         """start running the selecting algorithm
-
         Args:
             validate: validation method, eq. kfold, last day, etc
         """
@@ -275,25 +279,22 @@ class Select(object):
             f.write('\n{}\n%{}%\n'.format('Start!','-'*60))
         print("Features Quantity Limit: {}".format(self._FeaturesLimit))
         print("Time Limit: {} min(s)".format(self._TimeLimit))
-        a = _importsance_selection(df = self._df, clf = self.clf,
+        a = _coherence_selection(df = self._df, clf = self.clf,
                                     RecordFolder = self._logfile,
                                     LossFunction = self._modelscore,
                                     label = self._label,
+                                    columnname = self.ColumnName[:],
                                     start = self._temp,
                                     FeaturesQuanLimitation = self._FeaturesLimit,
                                     TimeLimitation = self._TimeLimit,
-                                    selectkey = self._key,
                                     selectbatch = self._batch,
                                     selectfrac = self._frac,
+                                    coherencelowerbound = self._lowerbound,
                                     direction = self._direction,
                                     validatefunction = validate,
-                                    important_update = self._update_imp,
                                     )
         try:
-            best_features_comb = a.select()
-        except:
-            best_features_comb = a.self._bestfeature
+            a.select()
         finally:
             with open(self._logfile, 'a') as f:
                 f.write('\n{}\n{}\n%{}%\n'.format('Done',self._temp,'-'*60))
-        return best_features_comb
