@@ -78,21 +78,21 @@ class _coherence_selection(object):
             n = 1
         print('Remove Batch: {}'.format(n))
         iter_num = 0
-        cc = self._removediag(self._df[selectcol[:]].corr()).abs().max().max()
+        t = self._removediag(self._df[selectcol[:]].corr())
+        cc = t.abs().max().max()
         print('totally {} features above {}'.format(np.sum(self._removediag(self._df[selectcol[:]].corr()).abs().max() > self._lowerbound),self._lowerbound))
         while (cc >= self._lowerbound) & (len(selectcol) > 1):
             temp = selectcol[:]
             deletenum = 0
             removed = []
-            t = self._removediag(self._df[temp].corr())
-            cc = t.abs().max().max()
             while (deletenum < n) & (cc >= self._lowerbound):
                 tempdelete = t[t.abs().max() == t.abs().max().max()].abs().sum(axis = 1).argmax()
                 print('Delete {} with coherence {}'.format(tempdelete,cc))
                 temp.remove(tempdelete)
                 removed.append(tempdelete)
                 deletenum += 1
-                t = self._removediag(self._df[temp].corr())
+#                t = self._removediag(self._df[temp].corr())
+                t = t.drop(labels = tempdelete,axis = 0).drop(labels = tempdelete,axis = 1)
                 cc = t.abs().max().max()
             self._validation(temp[:], str(iter_num), str(removed))
             iter_num += 1
