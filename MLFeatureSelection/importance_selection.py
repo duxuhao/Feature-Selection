@@ -178,6 +178,7 @@ class Select(object):
         self._frac = 1
         self._batch = 1
         self._key = ''
+        self._update_imp = 1
 
     def SetLogFile(self, fn):
         """Setup the log file
