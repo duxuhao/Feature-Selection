@@ -86,58 +86,58 @@ features_combination = readlog(logfile, logscore)
 
 ## Function Parameters
 
-**sf.ImportDF(df,label)
+**sf.ImportDF(df,label)**
     
     df: pd.DataFrame, include all features    
     label: str, name of the label column
     
-**sf.ImportLossFunction(lossfunction,direction)
+**sf.ImportLossFunction(lossfunction,direction)**
 
     lossfunction: handle of the loss function, function return score as scalar value (logloss, AUC, etc)    
     direction: 'ascend'/'descend', direction to improve
     
-**sf.InitialFeatures(features)
+**sf.InitialFeatures(features)**
 
     features: list of initial features combination,     
               empty list will drive code to start from nothing    
               list with all trainable features will drive code               
               to start backward searching at the beginning
               
-**sf.InitialNonTrainableFeatures(features)#only for sequence selection
+**sf.InitialNonTrainableFeatures(features)** #only for sequence selection
 
     features: list of features that not trainable (string, datetime, etc)
 
-**sf.GenerateCol(key=None,selectstep=1) #only for sequence selection
+**sf.GenerateCol(key=None,selectstep=1)** #only for sequence selection
 
     key: str for the selected features, only the features with keyword will be seleted,         
          default to be None         
     selectstep: int, value for features selection step, default to be 1
     
-**sf.SelectRemoveMode(frac=1,batch=1,key='')
+**sf.SelectRemoveMode(frac=1,batch=1,key='')**
 
     frac: float, percentage of delete features from all features    
           default to be 1 as using the batch          
     batch: int, delete features quantity every iteration    
     key: str, only delete the features with keyword
     
-**sf.SetTimeLimit(TimeLimit)
+**sf.SetTimeLimit(TimeLimit)**
 
     TimeLimit: float, maximum running time, unit in minute
     
 
-**sf.SetFeaturesLimit(FeaturesLimit)
+**sf.SetFeaturesLimit(FeaturesLimit)**
 
     FeaturesLimit: int, maximum feature quantity
     
-**sf.SetClassifier(clf)
+**sf.SetClassifier(clf)**
 
     clf: classfier or estimator, sklearn, xgboost, lightgbm, etc
 
-**sf.SetLogFile(logfile)
+**sf.SetLogFile(logfile)**
 
     logfile: str, log file name
     
-**sf.run(validate)
+**sf.run(validate)**
 
     validate: function handle with score and classifier return
     
