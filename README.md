@@ -35,7 +35,6 @@ sf.ImportDF(df,label = 'Label') #import dataframe and label
 sf.ImportLossFunction(lossfunction, direction = 'ascend') #import loss function handle and optimize direction, 'ascend' for AUC, ACC, 'descend' for logloss etc.
 sf.InitialNonTrainableFeatures(notusable) #those features that is not trainable in the dataframe, user_id, string, etc
 sf.InitialFeatures(initialfeatures) #initial initialfeatures as list
-sf.SelectRemoveMode(batch = 2)
 sf.GenerateCol() #generate features for selection
 sf.clf = LogisticRegression() #set the selected algorithm, can be any algorithm
 sf.SetLogFile('record.log') #log file
