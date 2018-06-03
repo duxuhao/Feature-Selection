@@ -12,18 +12,7 @@ from collections import OrderedDict
 import random
 import time
 import numpy as np
-from sklearn.model_selection import KFold
 import sys
-
-def DefaultValidation(X, y, features, clf, lossfunction, fit_params=None):
-    totaltest = []
-    kf = KFold(5)
-    for train_index, test_index in kf.split(X):
-        X_train, X_test = X.ix[train_index,:][features], X.ix[test_index,:][features]
-        y_train, y_test = y.ix[train_index,:].Label, y.ix[test_index,:].Label
-        clf.fit(X_train, y_train, **fit_params)
-        totaltest.append(lossfunction(y_test, clf.predict_proba(X_test)[:,1]))
-    return np.mean(totaltest)
 
 def _reachlimit(func):
     def wrapper(c):
@@ -61,8 +50,6 @@ class _LRS_SA_RGSS_combination(object):
         self.Process = Process
         self._direction = direction
         self._validatefunction = validatefunction
-        if self._validatefunction == 0:
-            self._validatefunction = DefaultValidation # DefaultValidation is 5-fold
         self._coherenceThreshold = CoherenceThreshold
         self._TimeLimitation = TimeLimitation * 60
         self._FeaturesQuanLimitation = FeaturesQuanLimitation
@@ -168,7 +155,7 @@ class _LRS_SA_RGSS_combination(object):
             tempdf = self._df
         #X, y = self._df, self._df[self._Label]
         X, y = tempdf, tempdf[self._Label]
-        totaltest = self._validatefunction(X, y, selectcol,
+        totaltest, x = self._validatefunction(X, y, selectcol,
                                            self._clf, self._LossFunction) #, self._fit_params)
         print('Mean loss: {}'.format(totaltest))
         # only when the score improve, the program will record,

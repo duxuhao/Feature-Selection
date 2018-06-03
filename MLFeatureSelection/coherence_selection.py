@@ -123,7 +123,11 @@ class _coherence_selection(object):
             with open(self._RecordFolder, 'a') as f: #record all the imporved combination
                 f.write('{0}  {1}:\n{2}\t{3}\n'.format(num, rmfeature,
                                                             np.round(np.mean(totaltest),6),
-                                                            selectcol[:], '*-' * 50))
+                                                            selectcol[:]))
+                f.write('*{}\n'.format(np.round(np.mean(totaltest),6)))
+                for s in selectcol[:]:
+                    f.write('{} '.format(s))
+                f.write('\n')
             self._TemplUsedFeatures, self._score = selectcol[:], np.mean(totaltest)
 
     def _removediag(self,df):
