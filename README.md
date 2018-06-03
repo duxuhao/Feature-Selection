@@ -30,7 +30,7 @@ pip3 install MLFeatureSelection
 from MLFeatureSelection import sequence_selection
 from sklearn.linear_model import LogisticRegression
 
-sf = sequence_selection.Select(Sequence = True, Random = True, Cross = True) 
+sf = sequence_selection.Select(Sequence = True, Random = True, Cross = False) 
 sf.ImportDF(df,label = 'Label') #import dataframe and label
 sf.ImportLossFunction(lossfunction, direction = 'ascend') #import loss function handle and optimize direction, 'ascend' for AUC, ACC, 'descend' for logloss etc.
 sf.InitialNonTrainableFeatures(notusable) #those features that is not trainable in the dataframe, user_id, string, etc
@@ -179,6 +179,8 @@ def lossfunction(y_pred, y_test):
 ## DEMO
 
 More examples are added in example folder include:
+
+- Demo contain all modulus can be found here ([demo](https://github.com/duxuhao/Feature-Selection/blob/master/Demo.py))
 
 - Simple Titanic with 5-fold validation and evaluated by accuracy ([demo](https://github.com/duxuhao/Feature-Selection/tree/master/example/titanic))
 

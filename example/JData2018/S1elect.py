@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
-from MLFeatureSelection import FeatureSelection as FS
+from MLFeatureSelection import sequence_selection as ss
 
 def score1(pred, real): #评分系统，感谢herhert，只要s1
     pred['index'] = np.arange(pred.shape[0]) + 1
@@ -37,7 +37,7 @@ def validate(X, y, features, clf, score):
     return np.mean(Performance),clf
 
 def main():
-    sf = FS.Select(Sequence = True, Random = False, Cross = False) #初始化选择器，选择你需要的流程
+    sf = sequence_selection as ss.Select(Sequence = True, Random = False, Cross = False) #初始化选择器，选择你需要的流程
     sf.ImportDF(prepareData(),label = 'buy') #导入数据集以及目标标签
     sf.ImportLossFunction(score1, direction = 'ascend') #导入评价函数以及优化方向
     #sf.ImportCrossMethod(CrossMethod)
