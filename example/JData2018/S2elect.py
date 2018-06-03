@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
-from MLFeatureSelection import FeatureSelection as FS
+from MLFeatureSelection import sequence_selection as ss
 
 def score(pred, real): #评分系统，感谢herhert，返回s2
     pred['index'] = np.arange(pred.shape[0]) + 1
@@ -52,10 +52,10 @@ def validate(X, y, features, clf, score): #测评系统
         prediction.sort_values(by = ['Prob'], ascending = False, inplace = True) #排序
         Performance.append(score(prediction[['user_id','Days']], Testtemp[['user_id', 'nextbuy','buy']]))
     print("Mean Score: {}".format(np.mean(Performance)))
-    return np.mean(Performance) #返回分数
+    return np.mean(Performance), clf #返回分数
 
 def main():
-    sf = FS.Select(Sequence = True, Random = False, Cross = False) #初始化选择器，选择你需要的流程
+    sf = ss.Select(Sequence = True, Random = False, Cross = False) #初始化选择器，选择你需要的流程
     sf.ImportDF(df,label = 'nextbuy') #导入数据集以及目标标签
     sf.ImportLossFunction(score, direction = 'ascend') #导入评价函数以及优化方向
     sf.InitialNonTrainableFeatures(['buy','nextbuy','o_date','a_date','PredictDays','user_id']) #初始化不能用的特征

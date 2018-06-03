@@ -1,5 +1,5 @@
 from sklearn.linear_model import LogisticRegression
-from MLFeatureSelection import FeatureSelection as FS
+from MLFeatureSelection import sequence_selection as ss
 from sklearn.metrics import log_loss
 import pandas as pd
 import numpy as np
@@ -23,7 +23,7 @@ def validation(X,y, features, clf, lossfunction):
         #clf.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_test, y_test)], eval_metric='logloss', verbose=False,early_stopping_rounds=50)
         clf.fit(X_train, y_train)
         totaltest.append(lossfunction(y_test, clf.predict(X_test)))
-    return np.mean(totaltest)
+    return np.mean(totaltest), clf
 
 def add(x,y):
     return x + y
@@ -43,7 +43,7 @@ CrossMethod = {'+':add,
                '/':divide,}
 
 def main():
-    sf = FS.Select(Sequence = True, Random = False, Cross = True)
+    sf = ss.Select(Sequence = True, Random = False, Cross = True)
     sf.ImportDF(prepareData(),label = 'Survived')
     sf.ImportLossFunction(modelscore,direction = 'ascend')
     sf.ImportCrossMethod(CrossMethod)

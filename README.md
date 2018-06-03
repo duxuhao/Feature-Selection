@@ -85,6 +85,12 @@ features_combination = readlog(logfile, logscore)
 
 ## Function Parameters
 
+**sf = sequence_selection.Select(Sequence, Random, Cross)**
+
+    Sequence: switch for sequence selection selection include forward,backward and simulate anneal selection
+    Random: switch for randomly selection of features combination
+    Cross: switch for cross term generate, need to set sf.ImportCrossMethod() after
+
 **sf.ImportDF(df,label)**
     
     df: pd.DataFrame, include all features    
@@ -118,6 +124,14 @@ features_combination = readlog(logfile, logscore)
           default to be 1 as using the batch          
     batch: int, delete features quantity every iteration    
     key: str, only delete the features with keyword
+    
+**sf.ImportCrossMethod(CrossMethod)**
+
+    CrossMethod: dictionary for different cross method like add, divide, multiple and substraction
+    
+**sf.AddPotentialFeatures(features)**
+
+    features: list of strong features, switch for simulate anneal
     
 **sf.SetTimeLimit(TimeLimit)**
 

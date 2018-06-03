@@ -34,7 +34,7 @@ def validate(X, y, features, clf, score):
         prediction.sort_values(by = ['Prob'], ascending = False, inplace = True)
         Performance.append(score(prediction[['user_id','Days']], Testtemp[['user_id', 'nextbuy','buy']]))
     print("Mean Score: {}".format(np.mean(Performance)))
-    return np.mean(Performance)
+    return np.mean(Performance),clf
 
 def main():
     sf = FS.Select(Sequence = True, Random = False, Cross = False) #初始化选择器，选择你需要的流程

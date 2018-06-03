@@ -1,4 +1,4 @@
-from MLFeatureSelection import FeatureSelection as FS
+from MLFeatureSelection import sequence_selection as ss
 from sklearn.metrics import log_loss
 import lightgbm as lgbm
 import pandas as pd
@@ -27,7 +27,7 @@ def validation(X,y,features, clf,lossfunction):
         clf.fit(X_train,y_train, eval_set = [(X_train, y_train), (X_test, y_test)], eval_metric='logloss', verbose=False,early_stopping_rounds=200)
         totaltest += lossfunction(y_test, clf.predict_proba(X_test)[:,1])
     totaltest /= 1.0
-    return totaltest
+    return totaltest,clf
 
 def add(x,y):
     return x + y
@@ -47,7 +47,7 @@ CrossMethod = {'+':add,
                '/':divide,}
 
 def main():
-    sf = FS.Select(Sequence = True, Random = True, Cross = False) #select the way you want to process searching
+    sf = ss.Select(Sequence = True, Random = True, Cross = False) #select the way you want to process searching
     sf.ImportDF(prepareData(),label = 'is_trade')
     sf.ImportLossFunction(modelscore,direction = 'descend')
     sf.ImportCrossMethod(CrossMethod)
