@@ -146,14 +146,14 @@ More examples are added in example folder include:
 
 Parameters:  
 
-               **Sequence** (_bool_, optional, (defualt=True)) - switch for sequence selection 
-                            selection include forward,backward and simulate anneal selection
+**Sequence** (_bool_, optional, (defualt=True)) - switch for sequence selection 
+             selection include forward,backward and simulate anneal selection
                             
-               **Random** (_bool, optional, (defualt=True)_) - switch for randomly selection 
-                          of features combination
+**Random** (_bool, optional, (defualt=True)_) - switch for randomly selection 
+           of features combination
                           
-               **Cross** (_bool_, optional, (defualt=True)) - switch for cross term generate, 
-                         need to set sf.ImportCrossMethod() after
+**Cross** (_bool_, optional, (defualt=True)) - switch for cross term generate, 
+          need to set sf.ImportCrossMethod() after
 
 **sf.ImportDF(df,label)**
     
