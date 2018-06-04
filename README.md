@@ -83,77 +83,13 @@ logscore = 0.5 #any score in the logfile
 features_combination = readlog(logfile, logscore)
 ```
 
-## Function Parameters
+- format of validate and lossfunction
 
-**sf = sequence_selection.Select(Sequence, Random, Cross)**
+define your own:
+**validate**: validation method in function , ie k-fold, last time section valdate, random sampling validation, etc
 
-    Sequence: switch for sequence selection selection include forward,backward and simulate anneal selection
-    Random: switch for randomly selection of features combination
-    Cross: switch for cross term generate, need to set sf.ImportCrossMethod() after
+**lossfunction**: model performance evaluation method, ie logloss, auc, accuracy, etc
 
-**sf.ImportDF(df,label)**
-    
-    df: pd.DataFrame, include all features    
-    label: str, name of the label column
-    
-**sf.ImportLossFunction(lossfunction,direction)**
-
-    lossfunction: handle of the loss function, function return score as scalar value (logloss, AUC, etc)    
-    direction: 'ascend'/'descend', direction to improve
-    
-**sf.InitialFeatures(features)**
-
-    features: list of initial features combination,     
-              empty list will drive code to start from nothing    
-              list with all trainable features will drive code               
-              to start backward searching at the beginning
-              
-**sf.InitialNonTrainableFeatures(features)** #only for sequence selection
-
-    features: list of features that not trainable (string, datetime, etc)
-
-**sf.GenerateCol(key=None,selectstep=1)** #only for sequence selection
-
-    key: str for the selected features, only the features with keyword will be seleted,         
-         default to be None         
-    selectstep: int, value for features selection step, default to be 1
-    
-**sf.SelectRemoveMode(frac=1,batch=1,key='')**
-
-    frac: float, percentage of delete features from all features    
-          default to be 1 as using the batch          
-    batch: int, delete features quantity every iteration    
-    key: str, only delete the features with keyword
-    
-**sf.ImportCrossMethod(CrossMethod)**
-
-    CrossMethod: dictionary for different cross method like add, divide, multiple and substraction
-    
-**sf.AddPotentialFeatures(features)**
-
-    features: list of strong features, switch for simulate anneal
-    
-**sf.SetTimeLimit(TimeLimit)**
-
-    TimeLimit: float, maximum running time, unit in minute
-    
-
-**sf.SetFeaturesLimit(FeaturesLimit)**
-
-    FeaturesLimit: int, maximum feature quantity
-    
-**sf.SetClassifier(clf)**
-
-    clf: classfier or estimator, sklearn, xgboost, lightgbm, etc
-
-**sf.SetLogFile(logfile)**
-
-    logfile: str, log file name
-    
-**sf.run(validate)**
-
-    validate: function handle with score and classifier return
-    
 ```python
 def validate(X, y, features, clf, lossfunction):
     """define your own validation function with 5 parameters
@@ -173,9 +109,9 @@ def lossfunction(y_pred, y_test):
     return score
     """
     return np.mean(y_pred == y_test)
-
 ```
 
+    
 ## DEMO
 
 More examples are added in example folder include:
@@ -202,6 +138,82 @@ More examples are added in example folder include:
 - **Temporary Top 10** in JData-2018 (Peter Du)
 
 - **12nd** in IJCAI-2018 1st round
+
+## Function Parameters
+
+**sf = sequence_selection.Select(Sequence, Random, Cross)**
+
+Parameters:    **Sequence** (_bool_, optional, (defualt=True)) - switch for sequence selection 
+                            selection include forward,backward and simulate anneal selection
+               **Random** (_bool, optional, (defualt=True)_) - switch for randomly selection 
+                          of features combination
+               **Cross** (_bool_, optional, (defualt=True)) - switch for cross term generate, 
+                         need to set sf.ImportCrossMethod() after
+
+**sf.ImportDF(df,label)**
+    
+Parameters:    **df** (_pandas.DataFrame_) - dataframe includes include all features    
+               **label** (_str_) - name of the label column
+    
+**sf.ImportLossFunction(lossfunction,direction)**
+
+Parameters:    **lossfunction** (_function handle_) - handle of the loss function, function 
+                                should return score as float (logloss, AUC, etc)    
+               **direction** (_str,'ascend'/'descend'_) - direction to improve, 'descend' for 
+                             logloss, 'ascend' for AUC, etc
+    
+**sf.InitialFeatures(features)**
+
+Parameters:    **features** (_list, optional, (defualt=[])_) - list of initial features combination,     
+                            empty list will drive code to start from nothing    
+                            list with all trainable features will drive code               
+                            to start backward searching at the beginning
+              
+**sf.InitialNonTrainableFeatures(features)** #only for sequence selection
+
+Parameters:    **features** (_list_) - list of features that not trainable (labelname, string, datetime, etc)
+
+**sf.GenerateCol(key=None,selectstep=1)** #only for sequence selection
+
+Parameters:    **key** (_str, optional, default=None_) - only the features with keyword will be seleted,         
+                       default to be None         
+               **selectstep** (_int, optional, default=1_) - value for features selection step
+    
+**sf.SelectRemoveMode(frac=1,batch=1,key='')**
+
+Parameters:    **frac** (_float, optional, default=1_) - percentage of delete features from all features    
+                        default to be set as using the batch          
+               **batch** (_int, optional, default=1_) - delete features quantity every iteration    
+               **key** (_str, optional, default=None_) - only delete the features with keyword
+    
+**sf.ImportCrossMethod(CrossMethod)**
+
+Parameters:    **CrossMethod** (_dict_) - different cross method like add, divide, multiple and substraction
+    
+**sf.AddPotentialFeatures(features)**
+
+Parameters:    **features** (_list_, optional, default=[]_) - list of strong features, switch for simulate anneal
+    
+**sf.SetTimeLimit(TimeLimit=inf)**
+
+Parameters:    **TimeLimit** (_float, optional, default=inf_) - maximum running time, unit in minute
+    
+**sf.SetFeaturesLimit(FeaturesLimit=inf)**
+
+Parameters:    **FeaturesLimit** (int, optional, default=inf_) - maximum feature quantity
+    
+**sf.SetClassifier(clf)**
+
+Parameters:    **clf** (_predictor_) -  classfier or estimator, sklearn, xgboost, lightgbm, etc. Need to match the validate function
+
+**sf.SetLogFile(logfile)**
+
+Parameters:    **logfile** (_str_) - log file name
+    
+**sf.run(validate)**
+
+Parameters:    **validate** (_function handle_) - function return evaluation score and predictor 
+                            input features dataset X, label series Y, used features, predictor, lossfunction handle
 
 ## Algorithm details (selecting features based on greedy algorithm)
 
