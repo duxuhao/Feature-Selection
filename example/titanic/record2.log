@@ -1,0 +1,53 @@
+
+Start!
+%------------------------------------------------------------%
+1  PassengerId  0:
+0.634682	['PassengerId']
+*0.634682
+PassengerId 
+2  Pclass  0:
+0.670287	['Pclass']
+*0.670287
+Pclass 
+3  Sex  0:
+0.782472	['Sex']
+*0.782472
+Sex 
+4  SibSp  0:
+0.786941	['Sex', 'SibSp']
+*0.786941
+Sex SibSp 
+5  Parch  0:
+0.786966	['Sex', 'Parch']
+*0.786966
+Sex Parch 
+8  FamilySize  0:
+0.793658	['Sex', 'FamilySize']
+*0.793658
+Sex FamilySize 
+2  Pclass  0:
+0.802622	['Sex', 'FamilySize', 'Pclass']
+*0.802622
+Sex FamilySize Pclass 
+1  PassengerId  0:
+0.804869	['Sex', 'FamilySize', 'Pclass', 'PassengerId']
+*0.804869
+Sex FamilySize Pclass PassengerId 
+7  Name_length  0:
+0.807141	['Sex', 'FamilySize', 'Pclass', 'Name_length']
+*0.807141
+Sex FamilySize Pclass Name_length 
+cross term  (Sex*FamilySize)  0:
+0.809363	['Sex', 'FamilySize', 'Pclass', 'Name_length', '(Sex*FamilySize)']
+*0.809363
+Sex FamilySize Pclass Name_length (Sex*FamilySize) 
+cross term  (Name_length*Name_length)  0:
+0.81161	['Sex', 'FamilySize', 'Pclass', 'Name_length', '(Sex*FamilySize)', '(Name_length*Name_length)']
+*0.81161
+Sex FamilySize Pclass Name_length (Sex*FamilySize) (Name_length*Name_length) 
+*-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-*
+best score:0.811610486891
+best features combination: ['Sex', 'FamilySize', 'Pclass', 'Name_length', '(Sex*FamilySize)', '(Name_length*Name_length)']
+Done
+[]
+%------------------------------------------------------------%

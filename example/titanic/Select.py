@@ -1,4 +1,6 @@
 from sklearn.linear_model import LogisticRegression
+import sys
+sys.path.append("../../")
 from MLFeatureSelection import sequence_selection as ss
 from sklearn.metrics import log_loss
 import pandas as pd
