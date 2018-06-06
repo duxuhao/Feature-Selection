@@ -99,10 +99,10 @@ class _LRS_SA_RGSS_combination(object):
             print('random select starts with:\n {0}\n score: {1}'.format(self._bestfeature,
                                                                          self._greedyscore))
             # random selection
-            if len(self.Process[1])==2:
+	    if type(self.Process[1]) == str and self.Process[1] == True:
+		self._MyRandom()
+            elif type(self.Process[1]) == list and len(self.Process[1])==2:
                 self._MyRandom(self.Process[1])
-            elif self.Process[1]==True:
-                self._MyRandom()
 
             if self.Process[2] & (self._first == 1): # avoid cross term twice until it is fix
                 if 1: #self._greedyscore == self._score:
