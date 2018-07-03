@@ -138,9 +138,13 @@ More examples are added in example folder include:
 
    -- https://github.com/duxuhao/rong360-season2
    
-- **Temporary Top 10** in JData-2018 (Peter Du)
+- **9th** in JData-2018 (Peter Du)
+
+   -- https://github.com/duxuhao/JData-2018
 
 - **12nd** in IJCAI-2018 1st round
+
+   -- https://github.com/duxuhao/IJCAI-2018-2
 
 ## Function Parameters
 
