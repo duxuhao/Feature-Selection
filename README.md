@@ -138,7 +138,7 @@ More examples are added in example folder include:
 
    -- https://github.com/duxuhao/rong360-season2
    
-- **9th** in JData-2018 (Peter Du)
+- **6th** in JData-2018 (Peter Du)
 
    -- https://github.com/duxuhao/JData-2018
 
