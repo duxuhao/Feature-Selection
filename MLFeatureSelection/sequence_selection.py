@@ -284,7 +284,8 @@ class _LRS_SA_RGSS_combination(object):
                         Effective.append(newcolname)
                     else:
                         self._df.drop(newcolname, axis = 1, inplace=True)
-        Effective.remove(self.remain)
+        if self.remain in Effective:
+            Effective.remove(self.remain)
 #        for rm in Effective:
 #             self._df.drop(rm, axis = 1, inplace=True)
         self._columnname.append(self.remain)
@@ -486,11 +487,8 @@ class Select(object):
                                     SampleState = self._samplestate,
                                     SampleMode = self._samplemode
                                     )
-        try:
-            best_feature_comb = a.select()
-        except:
-           best_feature_comb = a._bestfeature
-        finally:
-            with open(self._logfile, 'a') as f:
-                f.write('\n{}\n{}\n%{}%\n'.format('Done',self._temp,'-'*60))
+        best_feature_comb = a.select()
+        #best_feature_comb = a._bestfeature
+        with open(self._logfile, 'a') as f:
+            f.write('\n{}\n{}\n%{}%\n'.format('Done',self._temp,'-'*60))
         return best_feature_comb

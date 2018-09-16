@@ -290,11 +290,8 @@ class Select(object):
                                     validatefunction = validate,
                                     important_update = self._update_imp,
                                     )
-        try:
-            best_features_comb = a.select()
-        except:
-            best_features_comb = a._bestfeature
-        finally:
-            with open(self._logfile, 'a') as f:
-                f.write('\n{}\n{}\n%{}%\n'.format('Done',self._temp,'-'*60))
+        best_features_comb = a.select()
+        #best_features_comb = a._bestfeature
+        with open(self._logfile, 'a') as f:
+            f.write('\n{}\n{}\n%{}%\n'.format('Done',self._temp,'-'*60))
         return best_features_comb
