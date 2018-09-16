@@ -14,7 +14,7 @@ More features selection method will be included in the future!
 pip3 install MLFeatureSelection
 ```
 
-## Modulus in version 0.0.7
+## Modulus in version 0.0.8.1
 
 - Modulus for selecting features based on greedy algorithm (from MLFeatureSelection import sequence_selection)
 
