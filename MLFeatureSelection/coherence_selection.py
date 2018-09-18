@@ -116,7 +116,7 @@ class _coherence_selection(object):
         selectcol = list(OrderedDict.fromkeys(selectcol))
         tempdf = self._df
         X, y = tempdf, tempdf[self._Label]
-        totaltest = self._validatefunction(X, y, selectcol, self._clf, self._LossFunction) #, self._fit_params)
+        totaltest, self._clf = self._validatefunction(X, y, selectcol, self._clf, self._LossFunction) #, self._fit_params)
         print('remove features: {}'.format(rmfeature))
         print('Mean loss: {}'.format(totaltest))
         if self._ScoreUpdate():

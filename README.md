@@ -14,7 +14,7 @@ More features selection method will be included in the future!
 pip3 install MLFeatureSelection
 ```
 
-## Modulus in version 0.0.8.1
+## Modulus in version 0.0.8.2
 
 - Modulus for selecting features based on greedy algorithm (from MLFeatureSelection import sequence_selection)
 
@@ -26,7 +26,7 @@ pip3 install MLFeatureSelection
 
 ## Modulus Usage
 
-([Example](https://github.com/duxuhao/Feature-Selection/blob/master/Example))
+[Example](https://github.com/duxuhao/Feature-Selection/blob/master/Example)
 
 ## This features selection method achieved
 
@@ -34,7 +34,7 @@ pip3 install MLFeatureSelection
 
 -- https://github.com/duxuhao/rong360-season2
 
-- **6th** in JData-2018 (Peter Du)
+- **6th** in JData-2018
 
 -- https://github.com/duxuhao/JData-2018
 
@@ -57,8 +57,8 @@ More examples are added in example folder include:
 
 ## Function Parameters
 
-([Parameters](https://github.com/duxuhao/Feature-Selection/blob/master/MLFeatureSelection))
+[Parameters](https://github.com/duxuhao/Feature-Selection/blob/master/MLFeatureSelection)
 
 ## Algorithm details
 
-([Details](https://github.com/duxuhao/Feature-Selection/blob/master/Algorithms_Graphs))
+[Details](https://github.com/duxuhao/Feature-Selection/blob/master/Algorithms_Graphs)

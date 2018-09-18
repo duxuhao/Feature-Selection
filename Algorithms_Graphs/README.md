@@ -14,8 +14,8 @@ General features selection based on certain machine learning algorithm and evalu
 
 #### importance_selection:
 
-![importance_selection](https://github.com/duxuhao/Feature-Selection/blob/master/Algorithms_Graphs/importance_selection)
+![importance_selection](https://github.com/duxuhao/Feature-Selection/blob/master/Algorithms_Graphs/importance_selection.png)
 
 #### coherence_selection:
 
-![coherence_selection](https://github.com/duxuhao/Feature-Selection/blob/master/Algorithms_Graphs/coherence_selection)
+![coherence_selection](https://github.com/duxuhao/Feature-Selection/blob/master/Algorithms_Graphs/coherence_selection.png)
