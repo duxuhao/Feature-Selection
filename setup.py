@@ -4,7 +4,7 @@ import io
 
 setup(
      name = "MLFeatureSelection",
-     version = "0.0.7",
+     version = "0.0.8.1",
      keywords = ("pypi easy_install pip"),
      description = "Features selection algorithm based on self selected algorithm, loss function and validation method",
      long_description = open("README.rst").read(),
