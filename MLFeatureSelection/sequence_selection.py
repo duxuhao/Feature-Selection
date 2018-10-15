@@ -238,12 +238,15 @@ class _LRS_SA_RGSS_combination(object):
         for t in rl[0]:
             if t < len(col):
                 print('add {} features'.format(t))
+                have_selected = []
                 for i in range(rl[1]):
                     selectcol = random.sample(col, t)
-                    recordadd = selectcol[:]
-                    for add in self._bestfeature:
-                        selectcol.append(add)
-                    self._validation(selectcol, str(i), str(recordadd))
+                    if sorted(selectcol) not in have_selected:   #去重  提速
+                        have_selected.append(sorted(selectcol))
+                        recordadd = selectcol[:]
+                        for add in self._bestfeature:
+                            selectcol.append(add)
+                        self._validation(selectcol, str(i), str(recordadd))
         print('{0}{1}{2}'.format('-' * 20, 'complete random', '-' * 20))
 
     @_reachlimit
