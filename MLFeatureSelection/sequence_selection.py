@@ -212,7 +212,7 @@ class _LRS_SA_RGSS_combination(object):
             for sub, i in enumerate(col): #forward sequence selection add one each round
                 print(i)
                 print('{}/{}'.format(sub,len(col)))
-                selectcol = self._Startcol[:]
+                selectcol = self._TemplUsedFeatures[:]
                 selectcol.append(i)
                 self._validation(selectcol, str(1+sub), i, coetest = 0)
             for sr, i in enumerate(self._TemplUsedFeatures[:-1]): # backward sequence selection, -2 becuase the last 2 is just selected
