@@ -212,7 +212,7 @@ class _LRS_SA_RGSS_combination(object):
             for sub, i in enumerate(col): #forward sequence selection add one each round
                 print(i)
                 print('{}/{}'.format(sub,len(col)))
-                selectcol = self._Startcol[:]
+                selectcol = self._TemplUsedFeatures[:]
                 selectcol.append(i)
                 self._validation(selectcol, str(1+sub), i, coetest = 0)
             for sr, i in enumerate(self._TemplUsedFeatures[:-1]): # backward sequence selection, -2 becuase the last 2 is just selected
@@ -238,12 +238,15 @@ class _LRS_SA_RGSS_combination(object):
         for t in rl[0]:
             if t < len(col):
                 print('add {} features'.format(t))
+                have_selected = []
                 for i in range(rl[1]):
                     selectcol = random.sample(col, t)
-                    recordadd = selectcol[:]
-                    for add in self._bestfeature:
-                        selectcol.append(add)
-                    self._validation(selectcol, str(i), str(recordadd))
+                    if sorted(selectcol) not in have_selected:   #去重  提速
+                        have_selected.append(sorted(selectcol))
+                        recordadd = selectcol[:]
+                        for add in self._bestfeature:
+                            selectcol.append(add)
+                        self._validation(selectcol, str(i), str(recordadd))
         print('{0}{1}{2}'.format('-' * 20, 'complete random', '-' * 20))
 
     @_reachlimit
