@@ -33,10 +33,11 @@ def _reachlimit(func):
 class _LRS_SA_RGSS_combination(object):
 
     def __init__(self, clf, df, RecordFolder, columnname, start, label,
-                 Process, direction, LossFunction, FeaturesQuanLimitation,
+                 Process, direction, LossFunction, FeaturesQuanLimitation,featureeachround,
                  TimeLimitation, SampleRatio=1, SampleMode=1, SampleState=0,
                  fit_params=None, validatefunction=0,
                  PotentialAdd=[], CrossMethod=0, CoherenceThreshold=1):
+        self._featureeachround = featureeachround
         self._clf = clf
         self._fit_params = fit_params
         self._LossFunction = LossFunction
@@ -65,7 +66,6 @@ class _LRS_SA_RGSS_combination(object):
             self._sampleratio = SampleRatio
         self._samplestate = SampleState
         self._samplemode = SampleMode
-
     def _evaluate(self, a, b):
         if self._direction == 'ascend':
             return a > b
@@ -195,23 +195,36 @@ class _LRS_SA_RGSS_combination(object):
                 pass
         self.dele = ''
         self.bestscore, self._bestfeature = self._score, self._TemplUsedFeatures[:]
-        while (self._Startcol != self._TemplUsedFeatures) | (self._PotentialAdd != []): #stop when no improve for the last round and no potential add feature
-            if self._Startcol == self._TemplUsedFeatures:
+        _featureeachroundloop = 0
+        _featureeachroundmaximumloop = 10
+        _loopcount = 0
+        while (self._Startcol != self._TemplUsedFeatures) | (self._PotentialAdd != []) | (_featureeachroundloop < _featureeachroundmaximumloop): #stop when no improve for the last round and no potential add feature
+            _loopcount += 1
+            if self._Startcol == self._TemplUsedFeatures: #no improve
+                _featureeachroundloop += 1 #set maximum loop number for random select self._featureeachround of features each round
                 self._ScoreUpdate()
                 if self._direction == 'ascend':
                     self._score *= 0.95 #Simulate Anneal Arithmetic, step back a bit, the value need to be change
                 else:
                     self._score /= 0.95
                 self._TemplUsedFeatures.append(self._PotentialAdd[0])
+            else:
+                 _featureeachroundloop = 0
             print('{0} {1} round {2}'.format('*' * 20, len(self._TemplUsedFeatures)+1, '*' * 20))
             if self.remain in col:
                 col.remove(self.remain)
             if self.dele != '':
                 col.append(self.dele)
             self._Startcol = self._TemplUsedFeatures[:]
-            for sub, i in enumerate(col): #forward sequence selection add one each round
+            if len(col) > self._featureeachround > 0:
+                usecol = np.random.choice(col, self._featureeachround, replace=False).tolist()
+                _featureeachroundmaximumloop = int(np.sqrt(len(col) // self._featureeachround))
+            else:
+                usecol = col[:]
+                _featureeachroundmaximumloop = 0
+            for sub, i in enumerate(usecol): #forward sequence selection add one each round
                 print(i)
-                print('{}/{}'.format(sub,len(col)))
+                print('{}/{}'.format(sub,len(usecol)))
                 selectcol = self._Startcol[:]
                 selectcol.append(i)
                 self._validation(selectcol, str(1+sub), i, coetest = 0)
@@ -337,6 +350,7 @@ class Select(object):
         self._sampleratio = 1
         self._samplestate = 0
         self._samplemode = 1
+        self._featureeachround = 100000000
 
     def SetLogFile(self, fn):
         """Setup the log file
@@ -394,14 +408,26 @@ class Select(object):
 
     def GenerateCol(self, key=None, selectstep=1):
         """ for getting rid of the useless columns in the dataset
+            key: None of list of key word
         """
         self.ColumnName = list(self._df.columns)
         for i in self._NonTrainableFeatures:
             if i in self.ColumnName:
                 self.ColumnName.remove(i)
-        if key is not None:
+        if type(key) == type([]):
+            self.ColumnName = []
+            for k in key:
+                self.ColumnName += [i for i in self.ColumnName if k in i]
+        elif type(key) == type(''):
             self.ColumnName = [i for i in self.ColumnName if key in i]
         self.ColumnName = self.ColumnName[::selectstep]
+
+    def SetFeatureEachRound(self, ser):
+        """for speeding up adding features each round
+        Args:
+           ser: random select ser features each round
+        """
+        self._featureeachround = ser
 
     def AddPotentialFeatures(self, features):
         """give some strong features you think might be useful.
@@ -470,7 +496,9 @@ class Select(object):
             f.write('\n{}\n%{}%\n'.format('Start!','-'*60))
         print("Features Quantity Limit: {}".format(self._FeaturesLimit))
         print("Time Limit: {} min(s)".format(self._TimeLimit))
+        print(self._featureeachround)
         a = _LRS_SA_RGSS_combination(df = self._df, clf = self.clf,
+                                    featureeachround = self._featureeachround,
                                     RecordFolder = self._logfile,
                                     LossFunction = self._modelscore,
                                     label = self._label,

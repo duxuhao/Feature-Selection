@@ -48,9 +48,15 @@ General features selection based on certain machine learning algorithm and evalu
 
 #### Parameters:  
 
-**key** (_str, optional, default=None_) - only the features with keyword will be seleted, default to be None         
+**key** (_str or list of str, optional, default=None_) - only the features with keyword will be seleted, default to be None         
                        
 **selectstep** (_int, optional, default=1_) - value for features selection step
+
+### sf.SetFeatureEachRound(df,ser)
+    
+#### Parameters:  
+
+**ser** (_int_) - randomly select ser features from all features each round, can speed up adding features if there is a lot of features
     
 ### sf.SelectRemoveMode(frac=1,batch=1,key='')
 
