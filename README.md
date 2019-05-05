@@ -26,7 +26,7 @@ pip3 install MLFeatureSelection
 
 ## Modulus Usage
 
-[Example](https://github.com/duxuhao/Feature-Selection/blob/master/Example)
+[Example](https://github.com/duxuhao/Feature-Selection/blob/master/Demo.ipynb)
 
 ## This features selection method achieved
 
