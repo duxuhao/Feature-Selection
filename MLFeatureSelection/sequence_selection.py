@@ -201,13 +201,15 @@ class _LRS_SA_RGSS_combination(object):
         while (self._Startcol != self._TemplUsedFeatures) | (self._PotentialAdd != []) | (_featureeachroundloop < _featureeachroundmaximumloop): #stop when no improve for the last round and no potential add feature
             _loopcount += 1
             if self._Startcol == self._TemplUsedFeatures: #no improve
-                _featureeachroundloop += 1 #set maximum loop number for random select self._featureeachround of features each round
-                self._ScoreUpdate()
-                if self._direction == 'ascend':
-                    self._score *= 0.95 #Simulate Anneal Arithmetic, step back a bit, the value need to be change
+                if _featureeachroundloop < _featureeachroundmaximumloop:
+                    _featureeachroundloop += 1 #set maximum loop number for random select self._featureeachround of features each round
                 else:
-                    self._score /= 0.95
-                self._TemplUsedFeatures.append(self._PotentialAdd[0])
+                    self._ScoreUpdate()
+                    if self._direction == 'ascend':
+                        self._score *= 0.95 #Simulate Anneal Arithmetic, step back a bit, the value need to be change
+                    else:
+                        self._score /= 0.95
+                    self._TemplUsedFeatures.append(self._PotentialAdd[0])
             else:
                  _featureeachroundloop = 0
             print('{0} {1} round {2}'.format('*' * 20, len(self._TemplUsedFeatures)+1, '*' * 20))
