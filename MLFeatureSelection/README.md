@@ -52,11 +52,13 @@ General features selection based on certain machine learning algorithm and evalu
                        
 **selectstep** (_int, optional, default=1_) - value for features selection step
 
-### sf.SetFeatureEachRound(df,ser)
+### sf.SetFeatureEachRound(df,ser, featureeachroundRandom=False)
     
 #### Parameters:  
 
 **ser** (_int_) - randomly select ser features from all features each round, can speed up adding features if there is a lot of features
+
+**ser** (_bool_) - if it is true, ser features will be selected randomly from features pool, if false, they will be selected chunk by chunk
     
 ### sf.SelectRemoveMode(frac=1,batch=1,key='')
 

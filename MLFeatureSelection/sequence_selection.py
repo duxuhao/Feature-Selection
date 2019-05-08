@@ -34,10 +34,11 @@ class _LRS_SA_RGSS_combination(object):
 
     def __init__(self, clf, df, RecordFolder, columnname, start, label,
                  Process, direction, LossFunction, FeaturesQuanLimitation,featureeachround,
-                 TimeLimitation, SampleRatio=1, SampleMode=1, SampleState=0,
+                 TimeLimitation, featureeachroundRandom, SampleRatio=1, SampleMode=1, SampleState=0,
                  fit_params=None, validatefunction=0,
                  PotentialAdd=[], CrossMethod=0, CoherenceThreshold=1):
         self._featureeachround = featureeachround
+        self._featureeachroundRandom = featureeachroundRandom
         self._clf = clf
         self._fit_params = fit_params
         self._LossFunction = LossFunction
@@ -218,9 +219,12 @@ class _LRS_SA_RGSS_combination(object):
             if self.dele != '':
                 col.append(self.dele)
             self._Startcol = self._TemplUsedFeatures[:]
-            if len(col) > self._featureeachround > 0:
-                usecol = np.random.choice(col, self._featureeachround, replace=False).tolist()
-                _featureeachroundmaximumloop = int(np.sqrt(len(col) // self._featureeachround))
+            if (len(col) > self._featureeachround > 0):
+                if self._featureeachroundRandom: #random select _featureeachround features from all
+                    usecol = np.random.choice(col, self._featureeachround, replace=False).tolist()
+                else: #select _featureeachround features from all chunk by chunk
+                    usecol = col[_featureeachroundloop * self._featureeachround: (_featureeachroundloop + 1) * self._featureeachround]
+                _featureeachroundmaximumloop = len(col) // self._featureeachround
             else:
                 usecol = col[:]
                 _featureeachroundmaximumloop = 0
@@ -353,6 +357,7 @@ class Select(object):
         self._samplestate = 0
         self._samplemode = 1
         self._featureeachround = 100000000
+        self._featureeachroundRandom = False
 
     def SetLogFile(self, fn):
         """Setup the log file
@@ -424,12 +429,16 @@ class Select(object):
             self.ColumnName = [i for i in self.ColumnName if key in i]
         self.ColumnName = self.ColumnName[::selectstep]
 
-    def SetFeatureEachRound(self, ser):
+    def SetFeatureEachRound(self, ser, featureeachroundRandom=False):
         """for speeding up adding features each round
         Args:
            ser: random select ser features each round
+           featureeachroundRandom: bool, if it is true, ser features will be selected randomly
+                                   from features pool, if false, they will be selected chunk
+                                   by chunk
         """
         self._featureeachround = ser
+        self._featureeachroundRandom = featureeachroundRandom
 
     def AddPotentialFeatures(self, features):
         """give some strong features you think might be useful.
@@ -501,6 +510,7 @@ class Select(object):
         print(self._featureeachround)
         a = _LRS_SA_RGSS_combination(df = self._df, clf = self.clf,
                                     featureeachround = self._featureeachround,
+                                    featureeachroundRandom = self._featureeachroundRandom,
                                     RecordFolder = self._logfile,
                                     LossFunction = self._modelscore,
                                     label = self._label,
