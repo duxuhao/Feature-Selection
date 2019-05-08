@@ -24,10 +24,6 @@ pip3 install MLFeatureSelection
 
 - Modulus for reading the features combination from log file (from MLFeatureSelection.tools import readlog)
 
-## Modulus Usage
-
-[Example](https://github.com/duxuhao/Feature-Selection/blob/master/Demo.ipynb)
-
 ## This features selection method achieved
 
 - **1st** in Rong360
@@ -41,6 +37,137 @@ pip3 install MLFeatureSelection
 - **12nd** in IJCAI-2018 1st round
 
 -- https://github.com/duxuhao/IJCAI-2018-2
+
+## Modulus Usage
+
+[Example](https://github.com/duxuhao/Feature-Selection/blob/master/Demo.ipynb)
+
+- sequence_selection
+
+```python
+from MLFeatureSelection import sequence_selection
+from sklearn.linear_model import LogisticRegression
+
+sf = sequence_selection.Select(Sequence = True, Random = True, Cross = False) 
+sf.ImportDF(df,label = 'Label') #import dataframe and label
+sf.ImportLossFunction(lossfunction, direction = 'ascend') #import loss function handle and optimize direction, 'ascend' for AUC, ACC, 'descend' for logloss etc.
+sf.InitialNonTrainableFeatures(notusable) #those features that is not trainable in the dataframe, user_id, string, etc
+sf.InitialFeatures(initialfeatures) #initial initialfeatures as list
+sf.GenerateCol() #generate features for selection
+sf.SetFeatureEachRound(50, False) # set number of feature each round, and set how the features are selected from all features (True: sample selection, False: select chunk by chunk)
+sf.clf = LogisticRegression() #set the selected algorithm, can be any algorithm
+sf.SetLogFile('record.log') #log file
+sf.run(validate) #run with validation function, validate is the function handle of the validation function, return best features combination
+```
+
+- importance_selection
+
+```python
+from MLFeatureSelection import importance_selection
+import xgboost as xgb
+
+sf = importance_selection.Select() 
+sf.ImportDF(df,label = 'Label') #import dataframe and label
+sf.ImportLossFunction(lossfunction, direction = 'ascend') #import loss function and optimize direction
+sf.InitialFeatures() #initial features, input
+sf.SelectRemoveMode(batch = 2)
+sf.clf = xgb.XGBClassifier() 
+sf.SetLogFile('record.log') #log file
+sf.run(validate) #run with validation function, return best features combination
+```
+
+- coherence_selection
+
+```python
+from MLFeatureSelection import coherence_selection
+import xgboost as xgb
+
+sf = coherence_selection.Select() 
+sf.ImportDF(df,label = 'Label') #import dataframe and label
+sf.ImportLossFunction(lossfunction, direction = 'ascend') #import loss function and optimize direction
+sf.InitialFeatures() #initial features, input
+sf.SelectRemoveMode(batch = 2)
+sf.clf = xgb.XGBClassifier() 
+sf.SetLogFile('record.log') #log file
+sf.run(validate) #run with validation function, return best features combination
+```
+
+- tools.readlog: read previous selected features from log
+
+```python
+from MLFeatureSelection.tools import readlog
+
+logfile = 'record.log'
+logscore = 0.5 #any score in the logfile
+features_combination = readlog(logfile, logscore)
+```
+
+- tools.filldf: complete dataset when there is cross-term features
+
+```python
+from MLFeatureSelection.tools import readlog, filldf
+
+def add(x,y):
+    return x + y
+
+def substract(x,y):
+    return x - y
+
+def times(x,y):
+    return x * y
+
+def divide(x,y):
+    return x/y
+
+def sq(x,y):
+    return x ** 2
+
+
+CrossMethod = {'+':add,
+               '-':substract,
+               '*':times,
+               '/':divide,
+               } # set your own cross method
+
+df = pd.read_csv('XXX')
+logfile = 'record.log'
+logscore = 0.5 #any score in the logfile
+features_combination = readlog(logfile, logscore)
+df = filldf(df, features_combination, CrossMethod)
+```
+
+- format of validate and lossfunction
+
+define your own:
+
+**validate**: validation method in function , ie k-fold, last time section valdate, random sampling validation, etc
+
+**lossfunction**: model performance evaluation method, ie logloss, auc, accuracy, etc
+
+```python
+def validate(X, y, features, clf, lossfunction):
+    """define your own validation function with 5 parameters
+    input as X, y, features, clf, lossfunction
+    clf is set by SetClassifier()
+    lossfunction is import earlier
+    features will be generate automatically
+    function return score and trained classfier
+    """
+    clf.fit(X[features],y)
+    y_pred = clf.predict(X[features])
+    score = lossfuntion(y_pred,y)
+    return score, clf
+    
+def lossfunction(y_pred, y_test):
+    """define your own loss function with y_pred and y_test
+    return score
+    """
+    return np.mean(y_pred == y_test)
+```
+
+## multiple processing 
+
+Multiple processing can be set in validate function when you are doing N-fold.
     
 ## DEMO
 
