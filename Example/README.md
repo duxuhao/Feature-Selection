@@ -18,6 +18,7 @@ sf.ImportLossFunction(lossfunction, direction = 'ascend') #import loss function 
 sf.InitialNonTrainableFeatures(notusable) #those features that is not trainable in the dataframe, user_id, string, etc
 sf.InitialFeatures(initialfeatures) #initial initialfeatures as list
 sf.GenerateCol() #generate features for selection
+sf.SetFeatureEachRound(50, False) # set number of feature each round, and set how the features are selected from all features (True: sample selection, False: select chunk by chunk)
 sf.clf = LogisticRegression() #set the selected algorithm, can be any algorithm
 sf.SetLogFile('record.log') #log file
 sf.run(validate) #run with validation function, validate is the function handle of the validation function, return best features combination
@@ -65,6 +66,40 @@ logscore = 0.5 #any score in the logfile
 features_combination = readlog(logfile, logscore)
 ```
 
+- complete dataset when there is cross-term features
+
+```python
+from MLFeatureSelection.tools import readlog, filldf
+
+def add(x,y):
+    return x + y
+
+def substract(x,y):
+    return x - y
+
+def times(x,y):
+    return x * y
+
+def divide(x,y):
+    return x/y
+
+def sq(x,y):
+    return x ** 2
+
+
+CrossMethod = {'+':add,
+               '-':substract,
+               '*':times,
+               '/':divide,
+               } # set your own cross method
+
+df = pd.read_csv('XXX')
+logfile = 'record.log'
+logscore = 0.5 #any score in the logfile
+features_combination = readlog(logfile, logscore)
+df = filldf(df, features_combination, CrossMethod)
+```
+
 - format of validate and lossfunction
 
 define your own:
@@ -93,6 +128,10 @@ def lossfunction(y_pred, y_test):
     """
     return np.mean(y_pred == y_test)
 ```
+
+## multiple processing 
+
+Multiple processing can be set in validate function when you are doing N-fold.
 
     
 ## DEMO
